@@ -1,6 +1,17 @@
 use std::f64::consts::E;
 use std::f64::consts::PI;
 
+use crate::simpsons::simpsons_rule_approximation;
+
+pub fn cumulative_distribution(t: f64, n: u64) -> f64 {
+    return standard_constants(simpsons_rule_approximation(
+        0.0,
+        t,
+        n,
+        standard_normal_variable,
+    ));
+}
+
 pub fn standard_constants(accumulation: f64) -> f64 {
     return 0.5 + (1.0 / (2.0 * PI)).sqrt() * accumulation;
 }

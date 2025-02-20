@@ -1,5 +1,3 @@
-use crate::standard_normal::{round, standard_normal_variable};
-
 pub fn simpsons_rule_approximation(a: f64, b: f64, n: u64, eval: fn(x: f64) -> f64) -> f64 {
     let h = h(a, b, n);
     return h
@@ -35,6 +33,7 @@ fn second_interval(a: f64, h: f64, i: u64, eval: fn(x: f64) -> f64) -> f64 {
 #[cfg(test)]
 mod simpsons_rule_tests {
     use super::*;
+    use crate::standard_normal::{round, standard_normal_variable};
 
     #[test]
     fn h_test() {

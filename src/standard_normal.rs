@@ -4,12 +4,15 @@ use std::f64::consts::PI;
 use crate::simpsons::simpsons_rule_approximation;
 
 pub fn cumulative_distribution(t: f64, n: u64) -> f64 {
-    return standard_constants(simpsons_rule_approximation(
-        0.0,
-        t,
-        n,
-        standard_normal_variable,
-    ));
+    return round(
+        standard_constants(simpsons_rule_approximation(
+            0.0,
+            t,
+            n,
+            standard_normal_variable,
+        )),
+        12.0,
+    );
 }
 
 pub fn standard_constants(accumulation: f64) -> f64 {

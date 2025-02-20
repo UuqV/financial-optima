@@ -1,0 +1,5 @@
+[package]
+name = "simpsons"
+version = "0.1.0"
+description = ""
+edition = "2021"

@@ -32,5 +32,6 @@ mod standard_normal_tests {
     #[test]
     fn standard_normal_variable_test() {
         assert_eq!(round(standard_normal_variable(2.0), 6.0), 0.135335);
+        assert_eq!(standard_normal_variable(0.0), 1.0);
     }
 }

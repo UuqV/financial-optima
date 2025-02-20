@@ -14,10 +14,8 @@ fn initial_s(a: f64, b: f64, eval: fn(x: f64) -> f64) -> f64 {
     return (eval(a) / 6.0) + (eval(b) / 6.0);
 }
 
-fn simpsons_first_loop(a: f64, h: f64, n: u64, eval: fn(x: f64) -> f64) {
-    for i in 1..n {}
-
-    return;
+fn simpsons_first_loop(a: f64, h: f64, n: u64, eval: fn(x: f64) -> f64) -> f64 {
+    return (1..n).fold(0.0, |acc, t| acc + interval(a, h, t, eval));
 }
 
 fn interval(a: f64, h: f64, i: u64, eval: fn(x: f64) -> f64) -> f64 {
@@ -47,6 +45,27 @@ mod simpsons_rule_tests {
         assert_eq!(
             round(interval(0.0, 0.1, 1, standard_normal_variable), 12.0),
             0.331670826398
+        );
+    }
+    #[test]
+    fn simpsons_first_loop_test() {
+        assert_eq!(
+            round(
+                simpsons_first_loop(0.0, 0.1, 2, standard_normal_variable),
+                12.0
+            ),
+            round(interval(0.0, 0.1, 1, standard_normal_variable), 12.0)
+        );
+        assert_eq!(
+            round(
+                simpsons_first_loop(0.0, 0.1, 3, standard_normal_variable),
+                12.0
+            ),
+            round(
+                interval(0.0, 0.1, 1, standard_normal_variable)
+                    + interval(0.0, 0.1, 2, standard_normal_variable),
+                12.0
+            )
         );
     }
     #[test]

@@ -3,6 +3,10 @@ use std::f64::consts::PI;
 
 use crate::simpsons::simpsons_rule_approximation;
 
+pub fn round(x: f64, power: f64) -> f64 {
+    return (x * 10.0_f64.powf(power)).round() / (10.0_f64.powf(power));
+}
+
 pub fn cumulative_distribution(t: f64, n: u64) -> f64 {
     return round(
         standard_constants(simpsons_rule_approximation(
@@ -15,12 +19,25 @@ pub fn cumulative_distribution(t: f64, n: u64) -> f64 {
     );
 }
 
-pub fn standard_constants(accumulation: f64) -> f64 {
-    return 0.5 + (1.0 / (2.0 * PI)).sqrt() * accumulation;
+pub fn cumulative_distribution_in_tolerance(t: f64, n: u64) -> f64 {
+    let mut increase = n;
+    let mut last = cumulative_distribution(t, n);
+    let mut abs = last;
+    let tol = 10.0_f64.powf(-12.0);
+    println!("n={increase:#} : {last:#}");
+    while abs > tol {
+        increase = 2 * increase;
+        println!("\n{abs:#.12} > {tol:#}, n -> {increase:#.12}");
+        let current = cumulative_distribution(t, increase);
+        abs = (current - last).abs();
+        last = current;
+        println!("n={increase:#.12} : {last:#.12}");
+    }
+    return last;
 }
 
-pub fn round(x: f64, power: f64) -> f64 {
-    return (x * 10.0_f64.powf(power)).round() / (10.0_f64.powf(power));
+fn standard_constants(accumulation: f64) -> f64 {
+    return 0.5 + (1.0 / (2.0 * PI)).sqrt() * accumulation;
 }
 
 pub fn standard_normal_variable(x: f64) -> f64 {

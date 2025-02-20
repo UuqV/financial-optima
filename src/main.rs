@@ -11,4 +11,5 @@ fn main() {
         "N(0.5): {}",
         standard_normal::cumulative_distribution(0.5, 4)
     );
+    println!("N(1): {}", standard_normal::cumulative_distribution(1.0, 4));
 }

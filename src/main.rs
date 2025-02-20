@@ -1,3 +1,4 @@
+mod simpsons;
 mod standard_normal;
 use std::f64::consts::E;
 

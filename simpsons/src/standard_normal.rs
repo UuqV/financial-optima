@@ -8,26 +8,23 @@ pub fn round(x: f64, power: f64) -> f64 {
 }
 
 pub fn cumulative_distribution(t: f64, n: u64) -> f64 {
-    return round(
-        standard_constants(simpsons_rule_approximation(
-            0.0,
-            t,
-            n,
-            standard_normal_variable,
-        )),
-        12.0,
-    );
+    return standard_constants(simpsons_rule_approximation(
+        0.0,
+        t,
+        n,
+        standard_normal_variable,
+    ));
 }
 
-pub fn cumulative_distribution_in_tolerance(t: f64, n: u64) -> f64 {
+pub fn cumulative_distribution_in_tolerance(t: f64, n: u64, tol_factor: f64) -> f64 {
     let mut increase = n;
     let mut last = cumulative_distribution(t, n);
     let mut abs = last;
-    let tol = 10.0_f64.powf(-12.0);
+    let tol = 10.0_f64.powf(-tol_factor);
     println!("n={increase:#} : {last:#}");
     while abs > tol {
         increase = 2 * increase;
-        println!("\n{abs:#.12} > {tol:#}, n -> {increase:#.12}");
+        println!("{abs:#.12} > {tol:#}\n");
         let current = cumulative_distribution(t, increase);
         abs = (current - last).abs();
         last = current;

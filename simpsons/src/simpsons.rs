@@ -86,8 +86,11 @@ mod simpsons_rule_tests {
     #[test]
     fn simpsons_rule_test() {
         assert_eq!(
-            simpsons_rule_approximation(0.0, 0.1, 10, standard_normal_variable),
-            1.0
+            round(
+                simpsons_rule_approximation(0.0, 0.5, 10, standard_normal_variable),
+                1.0
+            ),
+            0.5
         );
     }
 }

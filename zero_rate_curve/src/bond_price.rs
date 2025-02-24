@@ -9,7 +9,7 @@ fn round(x: f64, power: f64) -> f64 {
 }
 
 #[cfg(test)]
-mod simpsons_rule_tests {
+mod bond_price_tests {
     use super::*;
 
     #[test]

@@ -7,15 +7,15 @@ fn main() {
 
     print_n(
         "N(0.1)",
-        standard_normal::cumulative_distribution_in_tolerance(0.1, 4, 6.0),
+        standard_normal::cumulative_distribution_in_tolerance(0.1, 4, 12.0),
     );
     print_n(
         "N(0.5)",
-        standard_normal::cumulative_distribution_in_tolerance(0.5, 4, 6.0),
+        standard_normal::cumulative_distribution_in_tolerance(0.5, 4, 12.0),
     );
     print_n(
         "N(1.0)",
-        standard_normal::cumulative_distribution_in_tolerance(1.0, 4, 6.0),
+        standard_normal::cumulative_distribution_in_tolerance(1.0, 4, 12.0),
     );
 
     let elapsed = now.elapsed();

@@ -1,5 +1,5 @@
 [package]
-name = "simpsons"
+name = "zero_rate_curve"
 version = "0.1.0"
 description = ""
 edition = "2021"

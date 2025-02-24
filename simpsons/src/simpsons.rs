@@ -27,7 +27,7 @@ fn simpsons_second_loop(a: f64, h: f64, n: u64, eval: fn(x: f64) -> f64) -> f64 
 }
 
 fn second_interval(a: f64, h: f64, i: u64, eval: fn(x: f64) -> f64) -> f64 {
-    return 2.0 * eval(a + (((i as f64) / 2.0) * h)) / 3.0;
+    return 2.0 * eval(a + (((i as f64) - 0.5) * h)) / 3.0;
 }
 
 #[cfg(test)]
@@ -87,10 +87,20 @@ mod simpsons_rule_tests {
     fn simpsons_rule_test() {
         assert_eq!(
             round(
-                simpsons_rule_approximation(0.0, 0.5, 10, standard_normal_variable),
+                simpsons_rule_approximation(0.0, 0.5, 50, standard_normal_variable),
                 1.0
             ),
             0.5
+        );
+    }
+    #[test]
+    fn easy_function_test() {
+        assert_eq!(
+            round(
+                simpsons_rule_approximation(0.0, 1.0, 10000000, |x: f64| x.powf(2.0)),
+                2.0
+            ),
+            0.33
         );
     }
 }

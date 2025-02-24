@@ -18,19 +18,19 @@ pub fn cumulative_distribution(t: f64, n: u64) -> f64 {
 
 pub fn cumulative_distribution_in_tolerance(t: f64, n: u64, tol_factor: f64) -> f64 {
     let mut increase = n;
-    let mut last = cumulative_distribution(t, n);
+    let mut last = simpsons_rule_approximation(0.0, t, n, standard_normal_variable);
     let mut abs = last;
     let tol = 10.0_f64.powf(-tol_factor);
     println!("n={increase:#} : {last:#}");
     while abs > tol {
         increase = 2 * increase;
         println!("{abs:#.12} > {tol:#}\n");
-        let current = cumulative_distribution(t, increase);
+        let current = simpsons_rule_approximation(0.0, t, increase, standard_normal_variable);
         abs = (current - last).abs();
         last = current;
         println!("n={increase:#.12} : {last:#.12}");
     }
-    return last;
+    return standard_constants(last);
 }
 
 fn standard_constants(accumulation: f64) -> f64 {

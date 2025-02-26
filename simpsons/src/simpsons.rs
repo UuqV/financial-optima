@@ -6,6 +6,23 @@ pub fn simpsons_rule_approximation(a: f64, b: f64, n: u64, eval: fn(x: f64) -> f
             + simpsons_second_loop(a, h, n, eval));
 }
 
+pub fn simpsons_rule_in_tolerance(t: f64, n: u64, tol_factor: f64, eval: fn(x: f64) -> f64) -> f64 {
+    let mut increase = n;
+    let mut last = simpsons_rule_approximation(0.0, t, n, eval);
+    let mut abs = last;
+    let tol = 10.0_f64.powf(-tol_factor);
+    println!("n={increase:#} : {last:#}");
+    while abs > tol {
+        increase = 2 * increase;
+        println!("{abs:#.12} > {tol:#}\n");
+        let current = simpsons_rule_approximation(0.0, t, increase, eval);
+        abs = (current - last).abs();
+        last = current;
+        println!("n={increase:#.12} : {last:#.12}");
+    }
+    return last;
+}
+
 fn h(a: f64, b: f64, n: u64) -> f64 {
     return (b - a) / n as f64;
 }

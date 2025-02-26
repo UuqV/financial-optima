@@ -33,7 +33,7 @@ mod bond_price_tests {
         );
     }
     #[test]
-    fn iteration_test() {
+    fn number_10() {
         assert_eq!(
             round(
                 bond_price_over_time(
@@ -61,6 +61,9 @@ mod bond_price_tests {
             ),
             101.960379
         );
+    }
+    #[test]
+    fn number_11() {
         assert_eq!(
             round(
                 bond_price_over_time(
@@ -87,6 +90,91 @@ mod bond_price_tests {
                 6.0
             ),
             104.573694
+        );
+        assert_eq!(
+            round(
+                bond_price_over_time(
+                    vec![
+                        CFD {
+                            t: (7.0 / 12.0),
+                            cash_flow: 4.0
+                        },
+                        CFD {
+                            t: (19.0 / 12.0),
+                            cash_flow: 104.0
+                        },
+                    ],
+                    |x: f64| 0.02 + (x / (200.0 - x))
+                ),
+                6.0
+            ),
+            103.440082
+        );
+        assert_eq!(
+            round(
+                bond_price_over_time(
+                    vec![
+                        CFD {
+                            t: (1.0 / 12.0),
+                            cash_flow: 2.0
+                        },
+                        CFD {
+                            t: (7.0 / 12.0),
+                            cash_flow: 2.0
+                        },
+                        CFD {
+                            t: (13.0 / 12.0),
+                            cash_flow: 2.0
+                        },
+                        CFD {
+                            t: (19.0 / 12.0),
+                            cash_flow: 102.0
+                        },
+                    ],
+                    |x: f64| 0.02 + (x / (200.0 - x))
+                ),
+                6.0
+            ),
+            103.495539
+        );
+        assert_eq!(
+            round(
+                bond_price_over_time(
+                    vec![
+                        CFD {
+                            t: (1.0 / 12.0),
+                            cash_flow: 1.0
+                        },
+                        CFD {
+                            t: (4.0 / 12.0),
+                            cash_flow: 1.0
+                        },
+                        CFD {
+                            t: (7.0 / 12.0),
+                            cash_flow: 1.0
+                        },
+                        CFD {
+                            t: (10.0 / 12.0),
+                            cash_flow: 1.0
+                        },
+                        CFD {
+                            t: (13.0 / 12.0),
+                            cash_flow: 1.0
+                        },
+                        CFD {
+                            t: (16.0 / 12.0),
+                            cash_flow: 1.0
+                        },
+                        CFD {
+                            t: (19.0 / 12.0),
+                            cash_flow: 101.0
+                        },
+                    ],
+                    |x: f64| 0.02 + (x / (200.0 - x))
+                ),
+                6.0
+            ),
+            102.518910
         );
     }
 }

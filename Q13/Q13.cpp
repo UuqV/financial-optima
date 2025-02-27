@@ -148,23 +148,3 @@ int main() {
 
     return 0;
 }
-
-
-/*
-    // Detailed output of the bond pricing
-   std::cout << "\n13ii) Bond Pricing Calculation" << "\n";
-   std::cout << "Face Value: $" << face_value << "\n";
-   std::cout << "Coupon Rate: " << coupon_rate * 100 << "%" << "\n";
-   std::cout << "Semiannual Coupon Amount: $" << coupon_amount << "\n";
-
-   std::cout << "\nPresent Value of Cash Flows:" << "\n";
-   std::cout << std::setprecision(6);
-   std::cout << "6 months:  $" << coupon_amount << " * " << df_6m << " = $" << pv_coupon_6m << "\n";
-   std::cout << "1 year:    $" << coupon_amount << " * " << df_1y << " = $" << pv_coupon_1y << "\n";
-   std::cout << "18 months: $" << coupon_amount << " * " << df_18m << " = $" << pv_coupon_18m << "\n";
-   std::cout << "2 years (coupon): $" << coupon_amount << " * " << std::setprecision(8) << df_2y << " = $" << std::setprecision(6) << pv_coupon_2y << "\n";
-   std::cout << "2 years (face):   $" << face_value << " * " << std::setprecision(8) << df_2y
-       << " = $" << std::setprecision(6) << pv_face_value << "\n";
-
-
-   */

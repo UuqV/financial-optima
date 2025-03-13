@@ -18,7 +18,7 @@ function simulate(n) {
       hist.set(c, histVal + 1);
     }
   }
-  console.log(hist);
+  console.log(new Map([...hist.entries()].sort((a, b) => a[0] - b[0])));
 }
 
-simulate(3);
+simulate(10);

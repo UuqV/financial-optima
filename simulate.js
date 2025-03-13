@@ -1,11 +1,26 @@
-let set = new Set();
-
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
-let i = 0;
-while (set.size < 50) {
-  set.add(getRandomInt(50));
-  i++;
+
+function simulate(n) {
+  let hist = new Map();
+  for (i = 0; i < 100; i++) {
+    let set = new Set();
+    let c = 0;
+    while (set.size < n) {
+      set.add(getRandomInt(n));
+      c++;
+    }
+    console.log(c);
+    const histVal = hist.get(c);
+    console.log(histVal);
+    if (histVal === undefined) {
+      hist.set(c, 0);
+    } else {
+      hist.set(c, histVal + 1);
+    }
+  }
+  console.log(hist);
 }
-console.log(i);
+
+simulate(3);

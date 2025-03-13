@@ -11,9 +11,7 @@ function simulate(n) {
       set.add(getRandomInt(n));
       c++;
     }
-    console.log(c);
     const histVal = hist.get(c);
-    console.log(histVal);
     if (histVal === undefined) {
       hist.set(c, 0);
     } else {

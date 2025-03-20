@@ -1,9 +1,9 @@
 use std::f64::consts::E;
 
 // Cash flow by date
-struct CFD {
-    t: f64,
-    cash_flow: f64,
+pub struct CFD {
+    pub t: f64,
+    pub cash_flow: f64,
 }
 
 fn disc(t: f64, zero_rate: fn(f64) -> f64) -> f64 {
@@ -11,7 +11,7 @@ fn disc(t: f64, zero_rate: fn(f64) -> f64) -> f64 {
 }
 
 // dtcfs: Dates to cash flows
-fn bond_price_over_time(dtcfs: Vec<CFD>, zero_rate: fn(f64) -> f64) -> f64 {
+pub fn bond_price_over_time(dtcfs: Vec<CFD>, zero_rate: fn(f64) -> f64) -> f64 {
     return dtcfs.into_iter().fold(0.0, |b, dtcf| {
         return b + dtcf.cash_flow * disc(dtcf.t, zero_rate);
     });
@@ -61,9 +61,6 @@ mod bond_price_tests {
             ),
             101.960379
         );
-    }
-    #[test]
-    fn number_11() {
         assert_eq!(
             round(
                 bond_price_over_time(
@@ -91,6 +88,9 @@ mod bond_price_tests {
             ),
             104.573694
         );
+    }
+    #[test]
+    fn number_11() {
         assert_eq!(
             round(
                 bond_price_over_time(

@@ -9,11 +9,19 @@ fn main() {
         -1000.0 * black_scholes::delta(100.0, 100.0, 0.30, 0.5, 0.05)
     );
 
-    let put: f64 = black_scholes::black_scholes(102.0, 100.0, 0.30, 125.0 / 252.0, 0.05);
+    let put: f64 = black_scholes::black_scholes(100.0, 100.0, 0.30, 0.5, 0.05);
     println!(
-        "ii) Put option price based on B-S Formula (S = 100, K = 100, vol = 30%, T = 125/252, r = 5%):\n\n\t{:#.6}",
+        "\tPut option price based on B-S Formula (S = 100, K = 100, vol = 30%, T = 0.5, r = 5%):\n\n\t{:#.6}",
         put
     );
+
+    let put: f64 = black_scholes::black_scholes(102.0, 100.0, 0.30, 125.0 / 252.0, 0.05);
+    println!(
+        "\n\tii) Put option price based on B-S Formula (S = 102, K = 100, vol = 30%, T = 125/252, r = 5%):\n\n\t{:#.6}",
+        put
+    );
+
+    // 5
 
     let put: f64 = black_scholes::black_scholes(25.0, 30.0, 0.30, 0.25, 0.02);
     println!(

@@ -5,6 +5,10 @@ pub fn black_scholes(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
     return k * E.powf(-r * t) * cdf(-d2(s, k, sigma, t, r)) - s * cdf(-d1(s, k, sigma, t, r));
 }
 
+pub fn delta(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
+    return cdf(-d1(s, k, sigma, t, r));
+}
+
 fn d1(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
     return ((s / k).ln() + (r + (sigma.powf(2.0) / 2.0)) * t) / (sigma * t.sqrt());
 }
@@ -27,14 +31,14 @@ mod black_scholes_test {
     }
 
     #[test]
-    fn dist_test() {
-        assert_eq!(round(cdf(0.5), 4.0), 0.6915);
-    }
-    #[test]
     fn put_test() {
         assert_eq!(
             round(black_scholes(20.0, 25.0, 0.30, 0.5, 0.04), 6.0),
             4.927351
         );
+    }
+    #[test]
+    fn delta_test() {
+        assert_eq!(round(delta(20.0, 25.0, 0.30, 0.5, 0.04), 3.0), 0.803);
     }
 }

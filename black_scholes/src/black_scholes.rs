@@ -62,7 +62,7 @@ pub fn rebalance(
 
         let options_delta = delta * -options + asset;
 
-        cash += -options_delta * price;
+        cash += options_delta * price;
         asset += -options_delta;
 
         println!(
@@ -116,7 +116,7 @@ mod black_scholes_test {
                     vec![20.0, 24.0],
                     25.0,
                     0.30,
-                    0.5,
+                    0.5 + (1.0 / 12.0),
                     1.0 / 12.0,
                     0.04,
                     1000.0,

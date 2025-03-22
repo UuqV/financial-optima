@@ -22,37 +22,38 @@ fn cdf(x: f64) -> f64 {
     return n.cdf(x);
 }
 
-fn rebalance(
+pub fn rebalance(
     s: Vec<f64>,
     k: f64,
     sigma: f64,
     mut t: f64,
+    t_interval: f64,
     r: f64,
     mut options: f64,
     mut asset: f64,
     mut cash: f64,
 ) -> f64 {
-    let mut option_price = black_scholes(25.0, k, sigma, t, r);
+    let mut option_price = black_scholes(s[0], k, sigma, t, r);
     println!("            Options     Asset     Cash         Value");
     println!(
         "Week 0      {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
-        options * option_price,
-        asset * 25.0,
+        options,
+        asset,
         cash,
-        options * option_price + asset * 25.0 + cash,
+        options * option_price + asset * s[0] + cash,
         width = 10
     );
     println!("----------------------------------------------------------");
     let mut week = 1;
     for price in s.iter() {
         cash = cash * E.powf(r);
-        t = t + (1.0 / 52.0);
+        t = t - t_interval;
         option_price = black_scholes(*price, k, sigma, t, r);
         println!(
             "Week {:#} - BH {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
             week,
-            options * option_price,
-            asset * price,
+            options,
+            asset,
             cash,
             options * option_price + asset * price + cash,
             width = 10
@@ -62,7 +63,7 @@ fn rebalance(
         let options_delta = delta * -options + asset;
 
         cash += -options_delta * price;
-        asset += options_delta;
+        asset += -options_delta;
 
         println!(
             "Week {:#} - HA            {:width$.2} {:width$.2}",
@@ -75,8 +76,8 @@ fn rebalance(
         println!(
             "Week {:#} - AH {:width$.2} {:width$.2} {:width$.2}",
             week,
-            options * option_price,
-            asset * price,
+            options,
+            asset,
             cash,
             width = 10
         );
@@ -112,18 +113,19 @@ mod black_scholes_test {
         assert_eq!(
             round(
                 rebalance(
-                    vec![30.0, 26.0, 22.0, 27.0],
+                    vec![20.0, 24.0],
                     25.0,
                     0.30,
                     0.5,
+                    1.0 / 12.0,
                     0.04,
                     1000.0,
-                    1265.8841,
-                    -15394.46221
+                    400.0,
+                    10000.0
                 ),
                 6.0
             ),
-            25.0
+            23400.0
         );
     }
 }

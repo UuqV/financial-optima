@@ -1,7 +1,16 @@
 use statrs::distribution::{ContinuousCDF, Normal};
+use std::f64::consts::E;
 
-pub fn black_scholes(s: f64, k: f64, sigma: f64, t: f64) -> f64 {
-    return s;
+pub fn black_scholes(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
+    return k * E.powf(-r * t) * cdf(-d1(s, k, sigma, t, r)) - s * cdf(-d2(s, k, sigma, t, r));
+}
+
+fn d1(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
+    return ((s / k).ln() + (r + sigma.powf(2.0) / 2.0) * t) / (sigma * t.sqrt());
+}
+
+fn d2(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
+    return d1(s, k, sigma, t, r) - (sigma * t.sqrt());
 }
 
 fn cdf(x: f64) -> f64 {
@@ -20,5 +29,12 @@ mod black_scholes_test {
     #[test]
     fn dist_test() {
         assert_eq!(round(cdf(0.5), 4.0), 0.6915);
+    }
+    #[test]
+    fn d2_test() {
+        assert_eq!(
+            round(black_scholes(25.0, 30.0, 0.30, 0.25, 0.02), 4.0),
+            4.9273
+        );
     }
 }

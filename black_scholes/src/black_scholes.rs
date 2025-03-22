@@ -22,6 +22,24 @@ fn cdf(x: f64) -> f64 {
     return n.cdf(x);
 }
 
+fn rebalance(
+    s: Vec<f64>,
+    k: f64,
+    sigma: f64,
+    t: f64,
+    r: f64,
+    options: f64,
+    asset: f64,
+    cash: f64,
+) -> f64 {
+    println!("       Options     Asset        Cash  ");
+    println!("Week 0 {:#.6} {:#.6} {:#.6}", options, asset, cash);
+    for price in s.iter() {
+        println!("The price is {:#.6}", price);
+    }
+    return k;
+}
+
 #[cfg(test)]
 mod black_scholes_test {
     use super::*;
@@ -40,5 +58,24 @@ mod black_scholes_test {
     #[test]
     fn delta_test() {
         assert_eq!(round(delta(20.0, 25.0, 0.30, 0.5, 0.04), 3.0), 0.803);
+    }
+    #[test]
+    fn rebalance_test() {
+        assert_eq!(
+            round(
+                rebalance(
+                    vec![30.0, 26.0, 22.0, 27.0],
+                    25.0,
+                    0.30,
+                    0.5,
+                    0.04,
+                    1000.0,
+                    1265.8841,
+                    -15394.46221
+                ),
+                6.0
+            ),
+            0.803
+        );
     }
 }

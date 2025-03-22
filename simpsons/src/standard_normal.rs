@@ -17,7 +17,7 @@ pub fn cumulative_distribution_standard_normal(t: f64, n: u64, tol_factor: f64) 
 }
 
 fn standard_constants(accumulation: f64) -> f64 {
-    return 0.5 + (1.0 / (2.0 * PI)).sqrt() * accumulation;
+    return (1.0 / (2.0 * PI)).sqrt() * accumulation;
 }
 
 pub fn standard_normal_variable(x: f64) -> f64 {

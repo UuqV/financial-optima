@@ -1,5 +1,6 @@
 mod simpsons;
 mod standard_normal;
+use std::f64::consts::E;
 
 fn main() {
     use std::time::Instant;
@@ -7,15 +8,9 @@ fn main() {
 
     print_n(
         "N(0.1)",
-        standard_normal::cumulative_distribution_standard_normal(0.1, 4, 12.0),
-    );
-    print_n(
-        "N(0.5)",
-        standard_normal::cumulative_distribution_standard_normal(0.5, 4, 12.0),
-    );
-    print_n(
-        "N(1.0)",
-        standard_normal::cumulative_distribution_standard_normal(1.0, 4, 12.0),
+        30.0 * E.powf(-0.02 * 0.25)
+            * standard_normal::cumulative_distribution_standard_normal(1.323813, 4, 6.0)
+            - 25.0 * standard_normal::cumulative_distribution_standard_normal(1.1173813, 4, 6.0),
     );
 
     let elapsed = now.elapsed();

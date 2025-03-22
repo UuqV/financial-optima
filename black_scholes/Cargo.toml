@@ -1,0 +1,8 @@
+[package]
+name = "black_scholes"
+version = "0.1.0"
+description = ""
+edition = "2021"
+
+[dependencies]
+statrs = "0.18.0"

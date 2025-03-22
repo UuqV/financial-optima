@@ -26,17 +26,26 @@ fn rebalance(
     s: Vec<f64>,
     k: f64,
     sigma: f64,
-    t: f64,
+    mut t: f64,
     r: f64,
     mut options: f64,
     mut asset: f64,
     mut cash: f64,
 ) -> f64 {
-    println!("       Options     Asset        Cash  ");
-    println!("Week 0 {:#.6} {:#.6} {:#.6}", options, asset, cash);
+    println!("            Options     Asset        Cash  ");
+    println!("Week 0      {:#.6} {:#.6} {:#.6}", options, asset, cash);
     let mut week = 1;
     for price in s.iter() {
-        println!("Week {:#} {:#.6} {:#.6} {:#.6}", week, options, asset, cash);
+        cash = cash * E.powf(r);
+        t = t + (1.0 / 52.0);
+        let option_price = black_scholes(*price, k, sigma, t, r);
+        println!(
+            "Week {:#} - BH {:#.6} {:#.6} {:#.6}",
+            week,
+            options * option_price,
+            asset * price,
+            cash
+        );
         week += 1;
     }
     return k;

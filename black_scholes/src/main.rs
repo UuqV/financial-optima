@@ -56,6 +56,17 @@ fn main() {
         (1000.0 * delta + 400.0) * 20.0
     );
 
+    rebalance(
+        vec![30.0, 26.0, 22.0, 27.0],
+        25.0,
+        0.30,
+        0.5,
+        0.04,
+        1000.0,
+        1265.8841,
+        -15394.46221
+    )
+
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
 }

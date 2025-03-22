@@ -32,14 +32,14 @@ fn rebalance(
     mut asset: f64,
     mut cash: f64,
 ) -> f64 {
-    let init_option_price = black_scholes(25.0, k, sigma, t, r);
+    let mut option_price = black_scholes(25.0, k, sigma, t, r);
     println!("            Options     Asset     Cash         Value");
     println!(
         "Week 0      {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
-        options * init_option_price,
+        options * option_price,
         asset * 25.0,
         cash,
-        options * init_option_price + asset * 25.0 + cash,
+        options * option_price + asset * 25.0 + cash,
         width = 10
     );
     println!("----------------------------------------------------------");
@@ -47,7 +47,7 @@ fn rebalance(
     for price in s.iter() {
         cash = cash * E.powf(r);
         t = t + (1.0 / 52.0);
-        let option_price = black_scholes(*price, k, sigma, t, r);
+        option_price = black_scholes(*price, k, sigma, t, r);
         println!(
             "Week {:#} - BH {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
             week,
@@ -65,6 +65,14 @@ fn rebalance(
         asset += options_delta;
 
         println!(
+            "Week {:#} - HA            {:width$.2} {:width$.2}",
+            week,
+            options_delta,
+            -options_delta * price,
+            width = 10
+        );
+
+        println!(
             "Week {:#} - AH {:width$.2} {:width$.2} {:width$.2}",
             week,
             options * option_price,
@@ -77,7 +85,7 @@ fn rebalance(
 
         week += 1;
     }
-    return k;
+    return options * option_price + asset * s[week - 2] + cash;
 }
 
 #[cfg(test)]
@@ -115,7 +123,7 @@ mod black_scholes_test {
                 ),
                 6.0
             ),
-            0.803
+            25.0
         );
     }
 }

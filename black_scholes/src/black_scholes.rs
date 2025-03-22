@@ -18,13 +18,13 @@ fn cdf(x: f64) -> f64 {
     return n.cdf(x);
 }
 
-fn round(x: f64, power: f64) -> f64 {
-    return (x * 10.0_f64.powf(power)).round() / (10.0_f64.powf(power));
-}
-
 #[cfg(test)]
 mod black_scholes_test {
     use super::*;
+
+    fn round(x: f64, power: f64) -> f64 {
+        return (x * 10.0_f64.powf(power)).round() / (10.0_f64.powf(power));
+    }
 
     #[test]
     fn dist_test() {
@@ -34,7 +34,7 @@ mod black_scholes_test {
     fn put_test() {
         assert_eq!(
             round(black_scholes(20.0, 25.0, 0.30, 0.5, 0.04), 6.0),
-            4.9273
+            4.927351
         );
     }
 }

@@ -28,14 +28,16 @@ fn rebalance(
     sigma: f64,
     t: f64,
     r: f64,
-    options: f64,
-    asset: f64,
-    cash: f64,
+    mut options: f64,
+    mut asset: f64,
+    mut cash: f64,
 ) -> f64 {
     println!("       Options     Asset        Cash  ");
     println!("Week 0 {:#.6} {:#.6} {:#.6}", options, asset, cash);
+    let mut week = 1;
     for price in s.iter() {
-        println!("The price is {:#.6}", price);
+        println!("Week {:#} {:#.6} {:#.6} {:#.6}", week, options, asset, cash);
+        week += 1;
     }
     return k;
 }

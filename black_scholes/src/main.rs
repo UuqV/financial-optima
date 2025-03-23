@@ -34,31 +34,9 @@ fn main() {
         1000.0 * put + 400.0 * 25.0 + 10000.0
     );
 
-    let delta: f64 = black_scholes::delta(25.0, 30.0, 0.30, 0.25, 0.02);
-
-    println!(
-        "ii)\n\tThe delta of the put option position is -1000N(-d1):\n\n\t{:#.6}\n",
-        -1000.0 * delta
-    );
-
-    println!(
-        "\tThe delta of the portfolio is the delta of the put option + 400:\n\n\t{:#.6}\n",
-        -1000.0 * delta + 400.0
-    );
-
-    println!(
-        "\tWe will purchase the above amount of shares for:\n\n\t{:#.6}\n",
-        (1000.0 * delta + 400.0) * 20.0
-    );
-
-    println!(
-        "\tUsing the 10,000 in cash we have and borrowing the rest at the risk-free rate:\n\n\t{:#.6}\n",
-        (1000.0 * delta + 400.0) * 20.0
-    );
-
     black_scholes::rebalance(
-        vec![30.0, 26.0, 22.0, 27.0],
-        25.0,
+        vec![25.0, 30.0, 26.0, 22.0, 27.0],
+        30.0,
         0.30,
         0.5,
         1.0 / 52.0,

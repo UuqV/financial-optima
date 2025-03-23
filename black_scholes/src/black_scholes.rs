@@ -33,22 +33,12 @@ pub fn rebalance(
     mut asset: f64,
     mut cash: f64,
 ) -> f64 {
-    let mut option_price = black_scholes(25.0, k, sigma, big_t, r);
-    println!("                Options         Asset         Cash             Value");
-    println!(
-        "Week 0      {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
-        options,
-        asset,
-        cash,
-        options * option_price + asset * 25.0 + cash,
-        width = 15
-    );
-    println!("----------------------------------------------------------------------------");
-    let mut week = 1;
+    let mut option_price = 0.0;
+    let mut options_delta = 0.0;
+    let mut week = 0;
     for price in s.iter() {
-        cash = cash * E.powf(r);
-        big_t = big_t - t_interval;
         option_price = black_scholes(*price, k, sigma, big_t, r);
+        println!("B-S  {:#.6}", option_price);
         println!(
             "Week {:#} - BH {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
             week,
@@ -60,7 +50,7 @@ pub fn rebalance(
         );
         let delta = delta(*price, k, sigma, big_t, r);
 
-        let options_delta = delta * -options + asset;
+        options_delta = delta * -options + asset;
 
         cash += options_delta * price;
         asset += -options_delta;
@@ -84,9 +74,11 @@ pub fn rebalance(
 
         println!("----------------------------------------------------------------------------");
 
+        cash = cash * E.powf(r);
+        big_t = big_t - t_interval;
         week += 1;
     }
-    return options * option_price + asset * s[week - 2] + cash;
+    return options_delta;
 }
 
 #[cfg(test)]
@@ -116,7 +108,7 @@ mod black_scholes_test {
                     vec![20.0, 24.0],
                     25.0,
                     0.30,
-                    0.5 + (1.0 / 12.0),
+                    0.5,
                     1.0 / 12.0,
                     0.04,
                     1000.0,
@@ -125,7 +117,7 @@ mod black_scholes_test {
                 ),
                 1.0
             ),
-            23400.0
+            291.6
         );
     }
 }

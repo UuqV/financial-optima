@@ -38,7 +38,6 @@ pub fn rebalance(
     let mut week = 0;
     for price in s.iter() {
         option_price = black_scholes(*price, k, sigma, big_t, r);
-        println!("B-S  {:#.6}", option_price);
         println!(
             "Week {:#} - BH {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
             week,

@@ -33,30 +33,30 @@ pub fn rebalance(
     mut asset: f64,
     mut cash: f64,
 ) -> f64 {
-    let mut option_price = black_scholes(s[0], k, sigma, big_t, r);
-    println!("            Options     Asset     Cash         Value");
+    let mut option_price = black_scholes(25.0, k, sigma, big_t, r);
+    println!("                Options         Asset         Cash             Value");
     println!(
-        "Week 0      {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
+        "Week 0      {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
         options,
         asset,
         cash,
-        options * option_price + asset * s[0] + cash,
-        width = 10
+        options * option_price + asset * 25.0 + cash,
+        width = 15
     );
-    println!("----------------------------------------------------------");
+    println!("----------------------------------------------------------------------------");
     let mut week = 1;
     for price in s.iter() {
         cash = cash * E.powf(r);
         big_t = big_t - t_interval;
         option_price = black_scholes(*price, k, sigma, big_t, r);
         println!(
-            "Week {:#} - BH {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
+            "Week {:#} - BH {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
             week,
             options,
             asset,
             cash,
             options * option_price + asset * price + cash,
-            width = 10
+            width = 15
         );
         let delta = delta(*price, k, sigma, big_t, r);
 
@@ -66,23 +66,23 @@ pub fn rebalance(
         asset += -options_delta;
 
         println!(
-            "Week {:#} - HA            {:width$.2} {:width$.2}",
+            "Week {:#} - HA                 {:width$.6} {:width$.6}",
             week,
             options_delta,
             -options_delta * price,
-            width = 10
+            width = 15
         );
 
         println!(
-            "Week {:#} - AH {:width$.2} {:width$.2} {:width$.2}",
+            "Week {:#} - AH {:width$.6} {:width$.6} {:width$.6}",
             week,
             options,
             asset,
             cash,
-            width = 10
+            width = 15
         );
 
-        println!("----------------------------------------------------------");
+        println!("----------------------------------------------------------------------------");
 
         week += 1;
     }

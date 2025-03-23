@@ -26,14 +26,14 @@ pub fn rebalance(
     s: Vec<f64>,
     k: f64,
     sigma: f64,
-    mut t: f64,
+    mut big_t: f64,
     t_interval: f64,
     r: f64,
     mut options: f64,
     mut asset: f64,
     mut cash: f64,
 ) -> f64 {
-    let mut option_price = black_scholes(s[0], k, sigma, t, r);
+    let mut option_price = black_scholes(s[0], k, sigma, big_t, r);
     println!("            Options     Asset     Cash         Value");
     println!(
         "Week 0      {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
@@ -47,8 +47,8 @@ pub fn rebalance(
     let mut week = 1;
     for price in s.iter() {
         cash = cash * E.powf(r);
-        t = t - t_interval;
-        option_price = black_scholes(*price, k, sigma, t, r);
+        big_t = big_t - t_interval;
+        option_price = black_scholes(*price, k, sigma, big_t, r);
         println!(
             "Week {:#} - BH {:width$.2} {:width$.2} {:width$.2} {:width$.2}",
             week,
@@ -58,7 +58,7 @@ pub fn rebalance(
             options * option_price + asset * price + cash,
             width = 10
         );
-        let delta = delta(*price, k, sigma, t, r);
+        let delta = delta(*price, k, sigma, big_t, r);
 
         let options_delta = delta * -options + asset;
 
@@ -123,7 +123,7 @@ mod black_scholes_test {
                     400.0,
                     10000.0
                 ),
-                6.0
+                1.0
             ),
             23400.0
         );

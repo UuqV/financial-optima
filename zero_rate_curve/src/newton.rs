@@ -2,7 +2,7 @@ use crate::bond_price::{round, CFD};
 use std::f64::consts::E;
 use std::num;
 
-fn newton_bond_yield(b: f64, cash_flow_dates: &Vec<CFD>, x0: f64, tol: f64) -> f64 {
+fn newton_bond_yield(b: f64, cash_flow_dates: &[CFD], x0: f64, tol: f64) -> f64 {
     let mut xnew: f64 = x0;
     let mut xold: f64 = x0 - 1.0;
     while (xnew - xold).abs() > tol {
@@ -13,16 +13,29 @@ fn newton_bond_yield(b: f64, cash_flow_dates: &Vec<CFD>, x0: f64, tol: f64) -> f
     return xnew;
 }
 
-fn upper_sum(cash_flow_dates: &Vec<CFD>, xold: f64) -> f64 {
+fn upper_sum(cash_flow_dates: &[CFD], xold: f64) -> f64 {
     return cash_flow_dates.into_iter().fold(0.0, |i, c| {
         return i + (c.cash_flow * E.powf(-xold * c.t));
     });
 }
 
-fn lower_sum(cash_flow_dates: &Vec<CFD>, xold: f64) -> f64 {
+fn lower_sum(cash_flow_dates: &[CFD], xold: f64) -> f64 {
     return cash_flow_dates.into_iter().fold(0.0, |i, c| {
         return i + (c.cash_flow * c.t * E.powf(-xold * c.t));
     });
+}
+
+fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+    return (1.0 / b)
+        * cash_flow_dates
+            .into_iter()
+            .enumerate()
+            .fold(0.0, |v, pair| {
+                let (e, c) = pair;
+                let i = (e + 1) as f64;
+                println!("i {} y {} c {}", i, y, c.cash_flow);
+                return v + c.cash_flow * (i / 2.0) * E.powf(-y * (i / 2.0));
+            });
 }
 
 #[cfg(test)]
@@ -30,14 +43,14 @@ mod newton_bond_tests {
     use super::*;
     #[test]
     fn upper_sum_test_one() {
-        let cash_flows = vec![CFD {
+        const cash_flows: [CFD; 1] = [CFD {
             t: (4.0 / 12.0),
             cash_flow: 4.0,
         }];
         assert_eq!(round(upper_sum(&cash_flows, 0.1), 6.0), 3.868864);
     }
     fn upper_sum_test_two() {
-        let cash_flows = vec![
+        const cash_flows: [CFD; 2] = [
             CFD {
                 t: (4.0 / 12.0),
                 cash_flow: 4.0,
@@ -51,7 +64,7 @@ mod newton_bond_tests {
     }
     #[test]
     fn lower_sum_test() {
-        let cash_flows = vec![CFD {
+        let cash_flows: [CFD; 1] = [CFD {
             t: (4.0 / 12.0),
             cash_flow: 4.0,
         }];
@@ -59,7 +72,7 @@ mod newton_bond_tests {
     }
     #[test]
     fn book_ex() {
-        let cash_flows = vec![
+        let cash_flows: [CFD; 6] = [
             CFD {
                 t: (4.0 / 12.0),
                 cash_flow: 4.0,
@@ -91,57 +104,72 @@ mod newton_bond_tests {
             0.064502
         );
     }
+
+    static book_q1_fixture: [CFD; 10] = [
+        CFD {
+            t: (6.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (12.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (18.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (24.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (30.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (36.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (42.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (48.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (54.0 / 12.0),
+            cash_flow: 1.6875,
+        },
+        CFD {
+            t: (60.0 / 12.0),
+            cash_flow: 101.6875,
+        },
+    ];
+
     #[test]
     fn book_1() {
-        let cash_flows = vec![
-            CFD {
-                t: (6.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (12.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (18.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (24.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (30.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (36.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (42.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (48.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (54.0 / 12.0),
-                cash_flow: 1.6875,
-            },
-            CFD {
-                t: (60.0 / 12.0),
-                cash_flow: 101.6875,
-            },
-        ];
-
         assert_eq!(
             round(
-                newton_bond_yield(100.0 + (1.0 / 32.0), &cash_flows, 0.1, 0.000001),
+                newton_bond_yield(100.0 + (1.0 / 32.0), &book_q1_fixture, 0.1, 0.000001),
                 6.0
             ),
             0.033401
+        );
+    }
+    #[test]
+    fn duration_test() {
+        assert_eq!(
+            round(
+                duration(
+                    &book_q1_fixture,
+                    100.0 + (1.0 / 32.0),
+                    newton_bond_yield(100.0 + (1.0 / 32.0), &book_q1_fixture, 0.1, 0.000001)
+                ),
+                6.0
+            ),
+            4.642735
         );
     }
 }

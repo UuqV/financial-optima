@@ -2,15 +2,24 @@ use crate::bond_price::{round, CFD};
 use std::f64::consts::E;
 use std::num;
 
-pub fn newton_bond_yield(b: f64, cash_flow_dates: &[CFD], x0: f64, tol: f64) -> f64 {
+fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) -> f64) -> f64 {
     let mut xnew: f64 = x0;
     let mut xold: f64 = x0 - 1.0;
     while (xnew - xold).abs() > tol {
         xold = xnew;
-        xnew = xold + (upper_sum(cash_flow_dates, xold) - b) / lower_sum(cash_flow_dates, xold);
+        xnew = xold + f(xold) / fprime(xold);
         println!("{:#.6}", xnew);
     }
     return xnew;
+}
+
+pub fn newton_bond_yield(b: f64, cash_flow_dates: &[CFD], x0: f64, tol: f64) -> f64 {
+    return newton(
+        x0,
+        tol,
+        |x: f64| -> f64 { upper_sum(cash_flow_dates, x) - b },
+        |x: f64| -> f64 { lower_sum(cash_flow_dates, x) },
+    );
 }
 
 fn upper_sum(cash_flow_dates: &[CFD], xold: f64) -> f64 {

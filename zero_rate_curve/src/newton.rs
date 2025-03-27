@@ -2,13 +2,13 @@ use crate::bond_price::{round, CFD};
 use std::f64::consts::E;
 use std::num;
 
-fn newton_bond_yield(b: f64, cash_flow_dates: &[CFD], x0: f64, tol: f64) -> f64 {
+pub fn newton_bond_yield(b: f64, cash_flow_dates: &[CFD], x0: f64, tol: f64) -> f64 {
     let mut xnew: f64 = x0;
     let mut xold: f64 = x0 - 1.0;
     while (xnew - xold).abs() > tol {
         xold = xnew;
         xnew = xold + (upper_sum(cash_flow_dates, xold) - b) / lower_sum(cash_flow_dates, xold);
-        println!("{}", xnew);
+        println!("{:#.6}", xnew);
     }
     return xnew;
 }
@@ -25,7 +25,7 @@ fn lower_sum(cash_flow_dates: &[CFD], xold: f64) -> f64 {
     });
 }
 
-fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+pub fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
     return (1.0 / b)
         * cash_flow_dates
             .into_iter()
@@ -37,7 +37,7 @@ fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
             });
 }
 
-fn convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+pub fn convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
     return (1.0 / b)
         * cash_flow_dates
             .into_iter()

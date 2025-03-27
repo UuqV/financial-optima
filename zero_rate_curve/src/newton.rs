@@ -2,8 +2,7 @@ use crate::bond_price::{round, CFD};
 use std::f64::consts::E;
 use std::num;
 
-fn newton_bond_price(b: f64, cash_flow_dates: &Vec<CFD>, tol: f64) -> f64 {
-    let x0: f64 = 0.1;
+fn newton_bond_yield(b: f64, cash_flow_dates: &Vec<CFD>, x0: f64, tol: f64) -> f64 {
     let mut xnew: f64 = x0;
     let mut xold: f64 = x0 - 1.0;
     while (xnew - xold).abs() > tol {
@@ -16,13 +15,13 @@ fn newton_bond_price(b: f64, cash_flow_dates: &Vec<CFD>, tol: f64) -> f64 {
 
 fn upper_sum(cash_flow_dates: &Vec<CFD>, xold: f64) -> f64 {
     return cash_flow_dates.into_iter().fold(0.0, |i, c| {
-        return c.cash_flow * E.powf(-xold * c.t);
+        return i + (c.cash_flow * E.powf(-xold * c.t));
     });
 }
 
 fn lower_sum(cash_flow_dates: &Vec<CFD>, xold: f64) -> f64 {
     return cash_flow_dates.into_iter().fold(0.0, |i, c| {
-        return c.cash_flow * c.t * E.powf(-xold * c.t);
+        return i + (c.cash_flow * c.t * E.powf(-xold * c.t));
     });
 }
 
@@ -88,8 +87,8 @@ mod newton_bond_tests {
         ];
 
         assert_eq!(
-            round(newton_bond_price(105.0, &cash_flows, 0.000001), 4.0),
-            6.4502
+            round(newton_bond_yield(105.0, &cash_flows, 0.1, 0.000001), 6.0),
+            0.064502
         );
     }
 }

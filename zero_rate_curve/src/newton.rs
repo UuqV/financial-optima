@@ -91,4 +91,57 @@ mod newton_bond_tests {
             0.064502
         );
     }
+    #[test]
+    fn book_1() {
+        let cash_flows = vec![
+            CFD {
+                t: (6.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (12.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (18.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (24.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (30.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (36.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (42.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (48.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (54.0 / 12.0),
+                cash_flow: 1.6875,
+            },
+            CFD {
+                t: (60.0 / 12.0),
+                cash_flow: 101.6875,
+            },
+        ];
+
+        assert_eq!(
+            round(
+                newton_bond_yield(100.0 + (1.0 / 32.0), &cash_flows, 0.1, 0.000001),
+                6.0
+            ),
+            0.033401
+        );
+    }
 }

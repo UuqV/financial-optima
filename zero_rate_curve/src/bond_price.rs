@@ -17,7 +17,7 @@ pub fn bond_price_over_time(dtcfs: Vec<CFD>, zero_rate: fn(f64) -> f64) -> f64 {
     });
 }
 
-fn round(x: f64, power: f64) -> f64 {
+pub fn round(x: f64, power: f64) -> f64 {
     return (x * 10.0_f64.powf(power)).round() / (10.0_f64.powf(power));
 }
 

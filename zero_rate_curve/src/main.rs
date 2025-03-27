@@ -1,4 +1,5 @@
 mod bond_price;
+mod newton;
 
 fn main() {
     use std::time::Instant;

@@ -5,6 +5,11 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
+    let elapsed = now.elapsed();
+    println!("\nElapsed: {:.2?}", elapsed);
+}
+
+fn pricing() {
     println!("Bond program output: ");
     println!(
         "10.\n i) {:#.6}",
@@ -106,7 +111,4 @@ fn main() {
             |x: f64| 0.02 + (x / (200.0 - x)),
         )
     );
-
-    let elapsed = now.elapsed();
-    println!("\nElapsed: {:.2?}", elapsed);
 }

@@ -33,8 +33,19 @@ fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
             .fold(0.0, |v, pair| {
                 let (e, c) = pair;
                 let i = (e + 1) as f64;
-                println!("i {} y {} c {}", i, y, c.cash_flow);
                 return v + c.cash_flow * (i / 2.0) * E.powf(-y * (i / 2.0));
+            });
+}
+
+fn convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+    return (1.0 / b)
+        * cash_flow_dates
+            .into_iter()
+            .enumerate()
+            .fold(0.0, |v, pair| {
+                let (e, c) = pair;
+                let i = (e + 1) as f64;
+                return v + c.cash_flow * (i.powf(2.0) / 4.0) * E.powf(-y * (i / 2.0));
             });
 }
 
@@ -170,6 +181,20 @@ mod newton_bond_tests {
                 6.0
             ),
             4.642735
+        );
+    }
+    #[test]
+    fn convexity_test() {
+        assert_eq!(
+            round(
+                convexity(
+                    &book_q1_fixture,
+                    100.0 + (1.0 / 32.0),
+                    newton_bond_yield(100.0 + (1.0 / 32.0), &book_q1_fixture, 0.1, 0.000001)
+                ),
+                6.0
+            ),
+            22.573118
         );
     }
 }

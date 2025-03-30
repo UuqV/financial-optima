@@ -11,7 +11,7 @@ fn disc(t: f64, zero_rate: fn(f64) -> f64) -> f64 {
 }
 
 // dtcfs: Dates to cash flows
-pub fn bond_price_over_time(dtcfs: Vec<CFD>, zero_rate: fn(f64) -> f64) -> f64 {
+pub fn bond_price_over_time(dtcfs: &[CFD], zero_rate: fn(f64) -> f64) -> f64 {
     return dtcfs.into_iter().fold(0.0, |b, dtcf| {
         return b + dtcf.cash_flow * disc(dtcf.t, zero_rate);
     });
@@ -37,7 +37,7 @@ mod bond_price_tests {
         assert_eq!(
             round(
                 bond_price_over_time(
-                    vec![
+                    &[
                         CFD {
                             t: 0.5,
                             cash_flow: 3.5
@@ -64,7 +64,7 @@ mod bond_price_tests {
         assert_eq!(
             round(
                 bond_price_over_time(
-                    vec![
+                    &[
                         CFD {
                             t: (1.0 / 12.0),
                             cash_flow: 3.5
@@ -94,7 +94,7 @@ mod bond_price_tests {
         assert_eq!(
             round(
                 bond_price_over_time(
-                    vec![
+                    &[
                         CFD {
                             t: (7.0 / 12.0),
                             cash_flow: 4.0
@@ -113,7 +113,7 @@ mod bond_price_tests {
         assert_eq!(
             round(
                 bond_price_over_time(
-                    vec![
+                    &[
                         CFD {
                             t: (1.0 / 12.0),
                             cash_flow: 2.0
@@ -140,7 +140,7 @@ mod bond_price_tests {
         assert_eq!(
             round(
                 bond_price_over_time(
-                    vec![
+                    &[
                         CFD {
                             t: (1.0 / 12.0),
                             cash_flow: 1.0

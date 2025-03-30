@@ -49,7 +49,7 @@ coupon rate and price 101. What are the modified duration and the convexity of t
 
     println!("\n 9. The yield of a two year quarterly coupon bond with coupon rate 8% is 9%.");
 
-    let q9: [bond_price::CFD; 6] = [
+    const q9: [bond_price::CFD; 6] = [
         bond_price::CFD {
             t: (3.0 / 12.0),
             cash_flow: 4.0,
@@ -78,41 +78,13 @@ coupon rate and price 101. What are the modified duration and the convexity of t
 
     println!("\n i) What are the price B, duration D, and convexity C of the bond?");
 
-    let price = bond_price::bond_price_over_time(
-        vec![
-            bond_price::CFD {
-                t: (3.0 / 12.0),
-                cash_flow: 4.0,
-            },
-            bond_price::CFD {
-                t: (6.0 / 12.0),
-                cash_flow: 4.0,
-            },
-            bond_price::CFD {
-                t: (9.0 / 12.0),
-                cash_flow: 4.0,
-            },
-            bond_price::CFD {
-                t: (12.0 / 12.0),
-                cash_flow: 4.0,
-            },
-            bond_price::CFD {
-                t: (18.0 / 12.0),
-                cash_flow: 4.0,
-            },
-            bond_price::CFD {
-                t: (24.0 / 12.0),
-                cash_flow: 104.0,
-            },
-        ],
-        |x: f64| 0.09,
-    );
+    let price = bond_price::bond_price_over_time(&q9, |x: f64| 0.09);
 
-    println!("\n Bond price: {:#.6}", price);
+    println!("\nBond price: {:#.6}", price);
 
-    println!("\nDuration: {:#.6}", newton::duration(&q1, price, n));
+    println!("\nDuration: {:#.6}", newton::duration(&q9, price, n));
 
-    println!("\nConvexity: {:#.6}", newton::convexity(&q1, price, n));
+    println!("\nConvexity: {:#.6}", newton::convexity(&q9, price, n));
 
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
@@ -123,7 +95,7 @@ fn pricing() {
     println!(
         "10.\n i) {:#.6}",
         bond_price::bond_price_over_time(
-            vec![
+            &[
                 bond_price::CFD {
                     t: (1.0 / 12.0),
                     cash_flow: 3.5,
@@ -147,7 +119,7 @@ fn pricing() {
     println!(
         " ii) {:#.6}",
         bond_price::bond_price_over_time(
-            vec![
+            &[
                 bond_price::CFD {
                     t: (7.0 / 12.0),
                     cash_flow: 4.0,
@@ -163,7 +135,7 @@ fn pricing() {
     println!(
         "\n11.\n i) {:#.6}",
         bond_price::bond_price_over_time(
-            vec![
+            &[
                 bond_price::CFD {
                     t: (1.0 / 12.0),
                     cash_flow: 2.0,
@@ -187,7 +159,7 @@ fn pricing() {
     println!(
         " ii) {:#.6}",
         bond_price::bond_price_over_time(
-            vec![
+            &[
                 bond_price::CFD {
                     t: (1.0 / 12.0),
                     cash_flow: 1.0,

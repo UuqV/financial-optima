@@ -225,6 +225,12 @@ mod newton_bond_tests {
             round(taylor_duration_price(101.0, 1.5, 0.001), 4.0),
             100.8485
         );
+        assert_eq!(
+            round(taylor_duration_price(101.0, 1.5, 0.005), 4.0),
+            100.2425
+        );
+        assert_eq!(round(taylor_duration_price(101.0, 1.5, 0.01), 4.0), 99.4850);
+        assert_eq!(round(taylor_duration_price(101.0, 1.5, 0.02), 4.0), 97.9700);
     }
     #[test]
     fn taylor_duration_convexity_test() {

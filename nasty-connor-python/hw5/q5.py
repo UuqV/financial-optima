@@ -1,6 +1,5 @@
 import math
 import scipy
-import time
 
 from q1 import d1, d2
 
@@ -12,24 +11,29 @@ def theta(S, K, r, sig, T, q):
     spot_term = (S * sig) / (2 * math.sqrt(T)) * scipy.stats.norm.pdf(d_1)
     return strike_term - spot_term
 
-
-def theta_deriv_spot(S, K, r, sig, T, q):
+def theta_deriv_log_moneyness(S, K, r, sig, T, q):
     d_1 = d1(S, K, r, sig, T, q)
     d_2 = d2(sig, T, d_1)
-    first = -r * K * math.exp(-r * T) * scipy.stats.norm.pdf(-d_2) / (S * sig * math.sqrt(T))
-    second_first = sig * math.exp(-math.pow(d_2, 2)/2) / (2 * math.sqrt(2 * T * math.pi))
-    second_second = 1 - (d_1/(sig * math.sqrt(T)))
-    return first - (second_first * second_second)
+    m = S/K
+    first_1 = r * math.exp(-1 * r * T)
+    first_2 = -1 * scipy.stats.norm.pdf(-1 * d_2) / (m * sig * math.sqrt(T))
+    first_3 = -1 * S * scipy.stats.norm.cdf(-1 * d_2) / math.pow(m, 2)
 
+    second_1 = -1 * sig / (2 * math.sqrt(2 * math.pi * T))
+    second_2 = K * math.exp(-1 * math.pow(d_1, 2) / 2)
+    second_3 = S * math.exp(-1 * math.pow(d_1, 2) / 2)  * (-1 * d_1) / (m * sig * math.sqrt(T))
+
+    return first_1 * (first_2 + first_3) + second_1 * (second_2 + second_3)
+    
 
 def main(guess_S, K, r, sig, T, q):
     xold = -1000
-    xnew = guess_S
+    xnew = guess_S/K
     tol_approx = 1e-6
     print(guess_S)
     while abs(xold - xnew) > tol_approx:
         xold = xnew
-        sub = theta(xnew, K, r, sig, T, q)/theta_deriv_spot(xnew, K, r, sig, T, q)
+        sub = theta(xnew * 2, 2, r, sig, T, q)/theta_deriv_log_moneyness(xnew * 2, 2, r, sig, T, q)
         xnew = xnew - sub
         print(xnew)
         # time.sleep(1)
@@ -63,7 +67,7 @@ print(theta(1, K, r, sig, T, 0))
 #
 # print(theta(0.7347243, K, r, sig, T, 0))  # <-- Here
 # print(theta(1000, K, r, sig, T, 0))  # <-- Here
-
+print(theta(73.4724 * 2, 200, r, sig, T, 0))
 # Find max of S/K
 # Put  no divs
 # r * K * e^{-rt} * N(-d2)

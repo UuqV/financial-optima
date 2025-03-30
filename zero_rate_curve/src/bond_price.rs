@@ -44,6 +44,33 @@ pub fn taylor_bond_price_comparison(
     return bond_price;
 }
 
+pub fn taylor_bond_price_deltas(
+    price: f64,
+    cash_flow_dates: &[CFD],
+    duration: f64,
+    convexity: f64,
+    y: f64,
+    deltas: &[f64],
+) {
+    for delta in deltas.into_iter() {
+        let d = taylor_duration_price(price, duration, *delta);
+        let c = taylor_duration_convexity_price(price, duration, convexity, *delta);
+        let bond_price = bond_price_over_time(cash_flow_dates, |x: f64| y + *delta);
+        let derr = (d - bond_price).abs() / bond_price;
+        let cerr = (c - bond_price).abs() / bond_price;
+        println!(
+            "{:width$.6} {:width$.6} {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
+            delta,
+            d,
+            c,
+            bond_price,
+            derr,
+            cerr,
+            width = 15
+        );
+    }
+}
+
 pub fn round(x: f64, power: f64) -> f64 {
     return (x * 10.0_f64.powf(power)).round() / (10.0_f64.powf(power));
 }

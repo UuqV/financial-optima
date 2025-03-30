@@ -99,7 +99,14 @@ fn hw5_9() {
     println!("\nConvexity: {:#.6}", convexity);
 
     println!("\n       delta y      B(new, D)       B(new,D,C)      B(y + delta y)     Err(B(new, D))   Err(B(new,D,C))");
-    bond_price::taylor_bond_price_comparison(price, &q9, duration, convexity, 0.09, 0.001);
+    bond_price::taylor_bond_price_deltas(
+        price,
+        &q9,
+        duration,
+        convexity,
+        0.09,
+        &[0.001, 0.005, 0.01, 0.02, 0.04],
+    );
 }
 
 fn pricing() {

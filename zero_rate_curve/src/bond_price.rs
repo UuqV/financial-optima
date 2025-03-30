@@ -7,14 +7,14 @@ pub struct CFD {
     pub cash_flow: f64,
 }
 
-fn disc(t: f64, zero_rate: fn(f64) -> f64) -> f64 {
+fn disc(t: f64, zero_rate: impl Fn(f64) -> f64) -> f64 {
     return E.powf(-1.0 * t * zero_rate(t));
 }
 
 // dtcfs: Dates to cash flows
-pub fn bond_price_over_time(dtcfs: &[CFD], zero_rate: fn(f64) -> f64) -> f64 {
+pub fn bond_price_over_time(dtcfs: &[CFD], zero_rate: impl Fn(f64) -> f64) -> f64 {
     return dtcfs.into_iter().fold(0.0, |b, dtcf| {
-        return b + dtcf.cash_flow * disc(dtcf.t, zero_rate);
+        return b + dtcf.cash_flow * disc(dtcf.t, &zero_rate);
     });
 }
 
@@ -28,12 +28,12 @@ pub fn taylor_bond_price_comparison(
 ) -> f64 {
     let d = taylor_duration_price(price, duration, delta);
     let c = taylor_duration_convexity_price(price, duration, convexity, delta);
-    let bond_price = bond_price_over_time(cash_flow_dates, |x: f64| 0.09 + 0.001);
+    let bond_price = bond_price_over_time(cash_flow_dates, |x: f64| y + delta);
     let derr = (d - bond_price).abs() / bond_price;
     let cerr = (c - bond_price).abs() / bond_price;
     println!(
         "{:width$.6} {:width$.6} {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
-        y,
+        delta,
         d,
         c,
         bond_price,

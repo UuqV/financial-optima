@@ -87,13 +87,19 @@ fn hw5_9() {
 
     println!("\ni) What are the price B, duration D, and convexity C of the bond?");
 
+    let y = 0.09;
     let price = bond_price::bond_price_over_time(&q9, |x: f64| 0.09);
+    let duration = newton::duration(&q9, price, y);
+    let convexity = newton::convexity(&q9, price, y);
 
     println!("\nBond price: {:#.6}", price);
 
-    println!("\nDuration: {:#.6}", newton::duration(&q9, price, 0.09));
+    println!("\nDuration: {:#.6}", duration);
 
-    println!("\nConvexity: {:#.6}", newton::convexity(&q9, price, 0.09));
+    println!("\nConvexity: {:#.6}", convexity);
+
+    println!("\n       delta y      B(new, D)       B(new,D,C)      B(y + delta y)     Err(B(new, D))   Err(B(new,D,C))");
+    bond_price::taylor_bond_price_comparison(price, &q9, duration, convexity, 0.09, 0.001);
 }
 
 fn pricing() {

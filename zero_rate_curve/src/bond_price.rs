@@ -1,3 +1,4 @@
+use crate::newton::{taylor_duration_convexity_price, taylor_duration_price};
 use std::f64::consts::E;
 
 // Cash flow by date
@@ -15,6 +16,32 @@ pub fn bond_price_over_time(dtcfs: &[CFD], zero_rate: fn(f64) -> f64) -> f64 {
     return dtcfs.into_iter().fold(0.0, |b, dtcf| {
         return b + dtcf.cash_flow * disc(dtcf.t, zero_rate);
     });
+}
+
+pub fn taylor_bond_price_comparison(
+    price: f64,
+    cash_flow_dates: &[CFD],
+    duration: f64,
+    convexity: f64,
+    y: f64,
+    delta: f64,
+) -> f64 {
+    let d = taylor_duration_price(price, duration, delta);
+    let c = taylor_duration_convexity_price(price, duration, convexity, delta);
+    let bond_price = bond_price_over_time(cash_flow_dates, |x: f64| 0.09 + 0.001);
+    let derr = (d - bond_price).abs() / bond_price;
+    let cerr = (c - bond_price).abs() / bond_price;
+    println!(
+        "{:width$.6} {:width$.6} {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
+        y,
+        d,
+        c,
+        bond_price,
+        derr,
+        cerr,
+        width = 15
+    );
+    return bond_price;
 }
 
 pub fn round(x: f64, power: f64) -> f64 {

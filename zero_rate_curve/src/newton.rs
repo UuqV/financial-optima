@@ -2,7 +2,7 @@ use crate::bond_price::{round, CFD};
 use std::f64::consts::E;
 use std::num;
 
-fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) -> f64) -> f64 {
+pub fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) -> f64) -> f64 {
     let mut xnew: f64 = x0;
     let mut xold: f64 = x0 - 1.0;
     while (xnew - xold).abs() > tol {

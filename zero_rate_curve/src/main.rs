@@ -47,6 +47,73 @@ coupon rate and price 101. What are the modified duration and the convexity of t
 
     println!("\nConvexity: {:#.6}", newton::convexity(&q1, 101.0, n));
 
+    println!("\n 9. The yield of a two year quarterly coupon bond with coupon rate 8% is 9%.");
+
+    let q9: [bond_price::CFD; 6] = [
+        bond_price::CFD {
+            t: (3.0 / 12.0),
+            cash_flow: 4.0,
+        },
+        bond_price::CFD {
+            t: (6.0 / 12.0),
+            cash_flow: 4.0,
+        },
+        bond_price::CFD {
+            t: (9.0 / 12.0),
+            cash_flow: 4.0,
+        },
+        bond_price::CFD {
+            t: (12.0 / 12.0),
+            cash_flow: 4.0,
+        },
+        bond_price::CFD {
+            t: (18.0 / 12.0),
+            cash_flow: 4.0,
+        },
+        bond_price::CFD {
+            t: (24.0 / 12.0),
+            cash_flow: 104.0,
+        },
+    ];
+
+    println!("\n i) What are the price B, duration D, and convexity C of the bond?");
+
+    let price = bond_price::bond_price_over_time(
+        vec![
+            bond_price::CFD {
+                t: (3.0 / 12.0),
+                cash_flow: 4.0,
+            },
+            bond_price::CFD {
+                t: (6.0 / 12.0),
+                cash_flow: 4.0,
+            },
+            bond_price::CFD {
+                t: (9.0 / 12.0),
+                cash_flow: 4.0,
+            },
+            bond_price::CFD {
+                t: (12.0 / 12.0),
+                cash_flow: 4.0,
+            },
+            bond_price::CFD {
+                t: (18.0 / 12.0),
+                cash_flow: 4.0,
+            },
+            bond_price::CFD {
+                t: (24.0 / 12.0),
+                cash_flow: 104.0,
+            },
+        ],
+        |x: f64| 0.09,
+    );
+
+    println!("\n Bond price: {:#.6}", price);
+
+    println!("\nDuration: {:#.6}", newton::duration(&q1, price, n));
+
+    println!("\nConvexity: {:#.6}", newton::convexity(&q1, price, n));
+
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
 }

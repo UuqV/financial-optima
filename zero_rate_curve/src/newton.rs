@@ -58,6 +58,10 @@ pub fn convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
             });
 }
 
+pub fn taylor_duration_price(price: f64, duration: f64, delta: f64) -> f64 {
+    return price * (1.0 - duration * delta);
+}
+
 #[cfg(test)]
 mod newton_bond_tests {
     use super::*;
@@ -204,6 +208,13 @@ mod newton_bond_tests {
                 6.0
             ),
             22.573118
+        );
+    }
+    #[test]
+    fn taylor_duration_test() {
+        assert_eq!(
+            round(taylor_duration_price(101.0, 1.5, 0.001), 4.0),
+            100.8485
         );
     }
 }

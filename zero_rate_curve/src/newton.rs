@@ -62,6 +62,15 @@ pub fn taylor_duration_price(price: f64, duration: f64, delta: f64) -> f64 {
     return price * (1.0 - duration * delta);
 }
 
+pub fn taylor_duration_convexity_price(
+    price: f64,
+    duration: f64,
+    convexity: f64,
+    delta: f64,
+) -> f64 {
+    return price * (1.0 - duration * delta + convexity / 2.0 * delta.powf(2.0));
+}
+
 #[cfg(test)]
 mod newton_bond_tests {
     use super::*;
@@ -215,6 +224,13 @@ mod newton_bond_tests {
         assert_eq!(
             round(taylor_duration_price(101.0, 1.5, 0.001), 4.0),
             100.8485
+        );
+    }
+    #[test]
+    fn taylor_duration_convexity_test() {
+        assert_eq!(
+            round(taylor_duration_convexity_price(101.0, 1.5, 2.5, 0.001), 4.0),
+            100.8486
         );
     }
 }

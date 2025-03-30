@@ -5,8 +5,15 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
+    hw5_9();
+
+    let elapsed = now.elapsed();
+    println!("\nElapsed: {:.2?}", elapsed);
+}
+
+fn hw5_3() {
     println!(
-        "Use Newton’s method to find the yield of a three year semiannual coupon bond with 4%
+        "3. Use Newton’s method to find the yield of a three year semiannual coupon bond with 4%
 coupon rate and price 101. What are the modified duration and the convexity of the bond?"
     );
 
@@ -46,8 +53,10 @@ coupon rate and price 101. What are the modified duration and the convexity of t
     println!("\nDuration: {:#.6}", newton::duration(&q1, 101.0, n));
 
     println!("\nConvexity: {:#.6}", newton::convexity(&q1, 101.0, n));
+}
 
-    println!("\n 9. The yield of a two year quarterly coupon bond with coupon rate 8% is 9%.");
+fn hw5_9() {
+    println!("\n9. The yield of a two year quarterly coupon bond with coupon rate 8% is 9%.");
 
     const q9: [bond_price::CFD; 6] = [
         bond_price::CFD {
@@ -76,18 +85,15 @@ coupon rate and price 101. What are the modified duration and the convexity of t
         },
     ];
 
-    println!("\n i) What are the price B, duration D, and convexity C of the bond?");
+    println!("\ni) What are the price B, duration D, and convexity C of the bond?");
 
     let price = bond_price::bond_price_over_time(&q9, |x: f64| 0.09);
 
     println!("\nBond price: {:#.6}", price);
 
-    println!("\nDuration: {:#.6}", newton::duration(&q9, price, n));
+    println!("\nDuration: {:#.6}", newton::duration(&q9, price, 0.09));
 
-    println!("\nConvexity: {:#.6}", newton::convexity(&q9, price, n));
-
-    let elapsed = now.elapsed();
-    println!("\nElapsed: {:.2?}", elapsed);
+    println!("\nConvexity: {:#.6}", newton::convexity(&q9, price, 0.09));
 }
 
 fn pricing() {

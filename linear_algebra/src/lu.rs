@@ -14,6 +14,29 @@ pub fn decompose(a: OMatrix<f64, Dyn, Dyn>, b: OVector<f64, Dyn>) -> OVector<f64
     return x;
 }
 
+pub fn power_intervals(n: u32) {
+    for r in 3..=n {
+        let power = 2_u32.pow(r) as usize;
+        let h = 1.0 / power as f64;
+        println!("n = {}, h = {}", power, h);
+        let a = build_ode(
+            |h: f64| 2.0 - h.powf(2.0),
+            |h: f64| -1.0 * (1.0 - h.powf(2.0)),
+            h,
+            power,
+        );
+
+        let b = build_solution(
+            |h: f64| 2.0 * (1.0 - h),
+            |h: f64| (3.0 / E) * (1.0 + h),
+            h,
+            power,
+        );
+
+        println!("{}", decompose(a, b));
+    }
+}
+
 pub fn build_ode(
     i: fn(h: f64) -> f64,
     ni: fn(h: f64) -> f64,

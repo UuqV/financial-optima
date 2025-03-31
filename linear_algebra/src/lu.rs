@@ -2,28 +2,15 @@ use nalgebra::{matrix, vector, Dyn, OMatrix, OVector, LU};
 use std::f64::consts::E;
 
 pub fn decompose(a: OMatrix<f64, Dyn, Dyn>, b: OVector<f64, Dyn>) -> OVector<f64, Dyn> {
-    println!("OMatrix A (Original):");
-    println!("{}", a);
-    // Perform LU decomposition
     let lu = LU::new(a.clone());
 
-    // Get the L and U matrices
     let l = lu.l();
     let u = lu.u();
 
-    // Step 1: Solve Ly = b (forward substitution)
     let y = forward_substitution(&l, &b);
 
-    // Step 2: Solve Ux = y (backward substitution)
     let x = backward_substitution(&u, &y);
 
-    // Print the results
-    println!("OMatrix L (Lower Triangular):");
-    println!("{}", l);
-    println!("OMatrix U (Upper Triangular):");
-    println!("{}", u);
-    println!("Solution vector x:");
-    println!("{}", x);
     return x;
 }
 

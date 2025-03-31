@@ -6,6 +6,11 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
+    let elapsed = now.elapsed();
+    println!("\nElapsed: {:.2?}", elapsed);
+}
+
+fn book() {
     // Define a square matrix A
     let a = lu::build_ode(|h: f64| 2.0 + h.powf(2.0), |h: f64| -1.0, 0.125, 7);
 
@@ -17,7 +22,4 @@ fn main() {
     println!("{}", b);
 
     println!("{}", lu::decompose(a, b));
-
-    let elapsed = now.elapsed();
-    println!("\nElapsed: {:.2?}", elapsed);
 }

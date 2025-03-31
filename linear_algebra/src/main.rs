@@ -6,7 +6,9 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
-    lu::power_intervals(6);
+    //lu::power_intervals(6);
+
+    book();
 
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
@@ -14,12 +16,12 @@ fn main() {
 
 fn book() {
     // Define a square matrix A
-    let a = lu::build_ode(|h: f64| 2.0 + h.powf(2.0), |h: f64| -1.0, 0.125, 7);
+    let a = lu::build_ode(|h: f64| 2.0 + h.powf(2.0), |h: f64| -1.0, 0.125, 8);
 
     println!("{}", a);
 
     // Right-hand side vector b
-    let b = lu::build_solution(|h: f64| 1.0, |h: f64| E, 0.125, 7);
+    let b = lu::build_solution(|h: f64| 1.0, |h: f64| E, 0.125, 8);
 
     println!("{}", b);
 

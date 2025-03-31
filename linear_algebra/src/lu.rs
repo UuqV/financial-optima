@@ -43,10 +43,10 @@ pub fn build_ode(
     h: f64,
     n: usize,
 ) -> OMatrix<f64, Dyn, Dyn> {
-    let mut a: OMatrix<f64, Dyn, Dyn> = OMatrix::<f64, Dyn, Dyn>::zeros(n, n);
+    let mut a: OMatrix<f64, Dyn, Dyn> = OMatrix::<f64, Dyn, Dyn>::zeros(n - 1, n - 1);
 
     a[(0, 0)] = i(h);
-    for r in 1..n {
+    for r in 1..(n - 1) {
         a[(r, r)] = i(h);
         a[(r, r - 1)] = ni(h);
         a[(r - 1, r)] = ni(h);
@@ -61,10 +61,10 @@ pub fn build_solution(
     h: f64,
     n: usize,
 ) -> OVector<f64, Dyn> {
-    let mut b: OVector<f64, Dyn> = OVector::<f64, Dyn>::zeros(n);
+    let mut b: OVector<f64, Dyn> = OVector::<f64, Dyn>::zeros(n - 1);
 
     b[0] = start(h);
-    b[n - 1] = end(h);
+    b[n - 2] = end(h);
 
     return b;
 }

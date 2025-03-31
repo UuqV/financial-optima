@@ -14,16 +14,36 @@ pub fn decompose(a: OMatrix<f64, Dyn, Dyn>, b: OVector<f64, Dyn>) -> OVector<f64
     return x;
 }
 
-pub fn build_ode(i: f64, ni: f64, n: usize) -> OMatrix<f64, Dyn, Dyn> {
+pub fn build_ode(
+    i: fn(h: f64) -> f64,
+    ni: fn(h: f64) -> f64,
+    h: f64,
+    n: usize,
+) -> OMatrix<f64, Dyn, Dyn> {
     let mut a: OMatrix<f64, Dyn, Dyn> = OMatrix::<f64, Dyn, Dyn>::zeros(n, n);
 
-    for r in 0..(n - 1) {
-        a[(r, r)] = i;
-        a[(r, r + 1)] = ni;
-        a[(r + 1, r)] = ni;
+    a[(0, 0)] = i(h);
+    for r in 1..n {
+        a[(r, r)] = i(h);
+        a[(r, r - 1)] = ni(h);
+        a[(r - 1, r)] = ni(h);
     }
 
     return a;
+}
+
+pub fn build_solution(
+    start: fn(h: f64) -> f64,
+    end: fn(h: f64) -> f64,
+    h: f64,
+    n: usize,
+) -> OVector<f64, Dyn> {
+    let mut b: OVector<f64, Dyn> = OVector::<f64, Dyn>::zeros(n);
+
+    b[0] = start(h);
+    b[0] = end(h);
+
+    return b;
 }
 
 fn forward_substitution(l: &OMatrix<f64, Dyn, Dyn>, b: &OVector<f64, Dyn>) -> OVector<f64, Dyn> {

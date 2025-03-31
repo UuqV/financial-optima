@@ -41,7 +41,7 @@ pub fn build_solution(
     let mut b: OVector<f64, Dyn> = OVector::<f64, Dyn>::zeros(n);
 
     b[0] = start(h);
-    b[0] = end(h);
+    b[n - 1] = end(h);
 
     return b;
 }

@@ -7,15 +7,14 @@ fn main() {
     let now = Instant::now();
 
     // Define a square matrix A
-    let a = lu::build_ode(|h: f64| 2.0 + h.powf(2.0), |h: f64| -1.0, 0.125, 8);
+    let a = lu::build_ode(|h: f64| 2.0 + h.powf(2.0), |h: f64| -1.0, 0.125, 7);
 
-    println!(
-        "{}",
-        lu::build_ode(|h: f64| 2.0 + h.powf(2.0), |h: f64| -1.0, 0.125, 8)
-    );
+    println!("{}", a);
 
     // Right-hand side vector b
-    let b = lu::build_solution(|h: f64| 1.0, |h: f64| E, 0.125, 8);
+    let b = lu::build_solution(|h: f64| 1.0, |h: f64| E, 0.125, 7);
+
+    println!("{}", b);
 
     println!("{}", lu::decompose(a, b));
 

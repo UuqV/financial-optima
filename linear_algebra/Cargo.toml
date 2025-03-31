@@ -1,0 +1,10 @@
+[package]
+name = "linear_algebra"
+version = "0.1.0"
+description = ""
+edition = "2021"
+
+[dependencies]
+statrs = "0.18.0"
+la = "0.2.0"
+nalgebra = "0.33.2"

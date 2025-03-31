@@ -76,6 +76,13 @@ mod lu_test {
         // Right-hand side vector b
         let b = OVector::<f64, Dyn>::from_vec(vec![1.0, 2.0, 3.0]);
 
-        println!("{}", decompose(a, b));
+        assert_eq!(
+            OVector::<f64, Dyn>::from_vec(vec![
+                0.2727272727272727,
+                0.2727272727272727,
+                0.4545454545454546
+            ]),
+            decompose(a, b)
+        );
     }
 }

@@ -6,9 +6,9 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
-    //lu::power_intervals(6);
+    lu::power_intervals(6);
 
-    book();
+    //book();
 
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);

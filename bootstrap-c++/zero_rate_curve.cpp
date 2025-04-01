@@ -1,8 +1,10 @@
 #include <iostream>
-#include <stdio>
+#include <stdio.h>
 #include <iomanip>
 #include <string>
 #include <cmath>
+#include <vector>
+#include <algorithm>
 
 void printVector(const std::vector<double>& vec)
 {
@@ -13,12 +15,26 @@ void printVector(const std::vector<double>& vec)
     std::cout << std::endl;
 }
 
+std::vector<double> intervals(double time, double frequency)
+{
+    std::vector<double> intervals;
+    double currentTime = frequency;
+
+    while (currentTime <= time)
+    {
+        intervals.push_back(currentTime);
+        currentTime += frequency;
+    }
+
+    return intervals;
+}
+
 double IR_a(double B, double C, double t)
 {
     return (1.0 / t) * log(100 / B);
 }
 
-std::vector<double> IR_b(double r_0, double B, double C, double t, double freq) //B_0 price of 6m 
+std::vector<double> IR_b(double r_0, double B, double C, double t, double freq) //B price of 6m 
 {
     double num = (B - ((C * 100 / 2) * exp(-t*0.5* r_0)));
     double dom = (100 + (C * freq* 100));
@@ -36,11 +52,7 @@ std::vector<double> IR_c(std::vector<double> const_rates, double B, double C, do
 {
     int const_size = const_rates.size(); // size of the existing rates
 
-    //std::cout << "Const size: " << const_size << "\n";
-
-    double k = const_rates.back(); // r_1 = constant k
-
-    //std::cout << "k: " << k << "\n";
+    double k = const_rates.back(); // last known rate = constant k
 
     std::vector<double> periods = intervals(t, freq); //size = T*freq
 
@@ -51,17 +63,11 @@ std::vector<double> IR_c(std::vector<double> const_rates, double B, double C, do
         rates[i] = const_rates[i];
     }
 
-    //rates[0] = const_rates[0];
-    //rates[1] = const_rates[1];
-
-
     int max = (periods.size() - 1);
     
 
-    double b = periods.back(); // last intervals
-    //std::cout << "b: " << b << "\n";
+    double b = periods.back(); // last intervals;
     double a = periods[(const_size-1)]; //first rate we don't know, as we know r_0, r_1
-    //std::cout << "a: " << a << "\n";
     double length = b - a; // b-a
 
     std::vector<double> x_coeff;
@@ -96,32 +102,24 @@ std::vector<double> IR_c(std::vector<double> const_rates, double B, double C, do
 
     for (int iteration = 0; iteration < max_iter; ++iteration)
     {
-        double fx = ((100 + (100 * C * freq)) * exp(-prev * t_end)) - B; //last two terms always follow this formula
+        double fx = ((100 + (100 * C * freq)) * exp(-prev * t_end)) - B; //last term always follow this formula
 
         //loop through known rates and add to fx
         for (int i = 0; i < const_size; i++)
         {
             fx += ((C * freq * 100) * exp(-periods[i] * rates[i]));
         }
-        /*
-        double fx = ((C * freq * 100) * exp(-periods[0] * rates[0])) //r_0
-            + ((C * freq * 100) * exp(-periods[1] * k)) + //r_1
-            ((100 + (100 * C * freq)) * exp(-prev * periods[max])) - B; //r_2 - B
-        */
+        
         
         //loop through remaining rates and add to fx
         for (int i = const_size; i < max; i++)
         {
             double add = (C * freq * 100) * exp(-periods[i] * ((x_coeff[i] * prev) + (k_coeff[i] * k)));
-            //std::cout << "fx_add: " << add << "\n";
             fx += add;
         }
 
-       //std::cout << "fx: " << fx << "\n";
-
         double fdx = -x_coeff[max]  * t_end * ((100 + (100 * C * freq)) * exp(-prev * t_end)); //differential is simply multiplying by the coefficient of x
 
-        //std::cout << "fdx0: " << fdx << "\n";
 
         for (int i = const_size; i < max; i++)
         {
@@ -130,11 +128,7 @@ std::vector<double> IR_c(std::vector<double> const_rates, double B, double C, do
             fdx += add;
         }
 
-        //std::cout << "fdx: " << fdx << "\n";
-
         curr = prev - (fx / fdx);
-
-        //std::cout << curr << "\n";
 
         if (iteration > 0)
         {
@@ -153,23 +147,8 @@ std::vector<double> IR_c(std::vector<double> const_rates, double B, double C, do
 
     for (int i = const_size; i <= max; ++i)
     {
-        //std::cout << "prev: " << prev << "\n";
         rates[i] = ((x_coeff[i] * prev) + (k_coeff[i] * k));
     }
-    /*
-    std::cout << "\nperiods: ";
-    printVector(periods);
-
-    std::cout << "\nxcoeff: ";
-    printVector(x_coeff);
-
-    std::cout << "\nkcoeff: ";
-    printVector(k_coeff);
-
-
-    std::cout << "\nrates: ";
-    printVector(rates);
-    */
 
 
     return rates;
@@ -178,6 +157,10 @@ std::vector<double> IR_c(std::vector<double> const_rates, double B, double C, do
 
 int main()
 {
+    double tol = 0.0000000001;
+    int iter_1 = 20;
+    int iter_2 = 5;
+
     std::cout << "Example from class: \n";
 
     double six_month = IR_a(99, 0, 0.5);

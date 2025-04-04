@@ -1,6 +1,5 @@
 import math
 import scipy
-import time
 
 
 def d1(S, K, r, sig, T, q):
@@ -18,7 +17,6 @@ def call(sig, S, K, T, r, q):
     d_2 = d2(sig, T, d_1)
     val = S * math.exp(-q * T) * scipy.stats.norm.cdf(d_1) - K * math.exp(-r * T) * scipy.stats.norm.cdf(d_2)
     return val
-# We have T, sig, r, no q, find S/K
 
 def vega(sig, S, K, r, T, q):
     d_1 = d1(S, K, r, sig, T, q)
@@ -28,17 +26,19 @@ def vega(sig, S, K, r, T, q):
 
 
 def main():
+    k = 30 
+    spot = 30 
+    time = .5 
+    interest = .03 
+    divs = .01
     xold = -1000
-    xnew = .25
+    xnew = .5
     tol_approx = 1e-6
     while abs(xold - xnew) > tol_approx:
         xold = xnew
-        sub = (call(xnew, 30, 30, .5, .03, .01) - 2.5)/vega(xnew, 30, 30, .03, .5, .01)
+        sub = (call(xnew, spot, k, time, interest, divs) - 2.5)/vega(xnew, spot, k, interest, time, divs)
         xnew = xnew - sub
-        print(abs(xold-xnew))
         print(xnew)
-
-
 
 
 if __name__ == "__main__":

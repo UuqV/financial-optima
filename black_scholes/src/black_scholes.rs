@@ -9,7 +9,7 @@ pub fn delta(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
     return cdf(-d1(s, k, sigma, t, r));
 }
 
-fn d1(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
+pub fn d1(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
     return ((s / k).ln() + (r + (sigma.powf(2.0) / 2.0)) * t) / (sigma * t.sqrt());
 }
 

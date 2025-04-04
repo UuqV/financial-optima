@@ -1,4 +1,5 @@
 mod black_scholes;
+mod implied_vol;
 
 fn main() {
     use std::time::Instant;

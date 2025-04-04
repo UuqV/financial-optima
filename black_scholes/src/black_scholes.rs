@@ -2,19 +2,25 @@ use statrs::distribution::{ContinuousCDF, Normal};
 use std::f64::consts::E;
 
 pub fn black_scholes(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
-    return k * E.powf(-r * t) * cdf(-d2(s, k, sigma, t, r)) - s * cdf(-d1(s, k, sigma, t, r));
+    return k * E.powf(-r * t) * cdf(-d2(s, k, sigma, t, r, 0.0))
+        - s * cdf(-d1(s, k, sigma, t, r, 0.0));
 }
 
-pub fn delta(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
-    return cdf(-d1(s, k, sigma, t, r));
+pub fn black_scholes_call(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    return s * E.powf(-q * t) * cdf(d1(s, k, sigma, t, r, q))
+        - k * E.powf(-r * t) * cdf(d2(s, k, sigma, t, r, q));
 }
 
-pub fn d1(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
-    return ((s / k).ln() + (r + (sigma.powf(2.0) / 2.0)) * t) / (sigma * t.sqrt());
+pub fn delta(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    return cdf(-d1(s, k, sigma, t, r, q));
 }
 
-fn d2(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
-    return d1(s, k, sigma, t, r) - (sigma * t.sqrt());
+pub fn d1(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    return ((s / k).ln() + (r - q + (sigma.powf(2.0) / 2.0)) * t) / (sigma * t.sqrt());
+}
+
+fn d2(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    return d1(s, k, sigma, t, r, q) - (sigma * t.sqrt());
 }
 
 fn cdf(x: f64) -> f64 {
@@ -47,7 +53,7 @@ pub fn rebalance(
             options * option_price + asset * price + cash,
             width = 15
         );
-        let delta = delta(*price, k, sigma, big_t, r);
+        let delta = delta(*price, k, sigma, big_t, r, 0.0);
 
         options_delta = delta * -options + asset;
 
@@ -97,7 +103,7 @@ mod black_scholes_test {
     }
     #[test]
     fn delta_test() {
-        assert_eq!(round(delta(20.0, 25.0, 0.30, 0.5, 0.04), 3.0), 0.803);
+        assert_eq!(round(delta(20.0, 25.0, 0.30, 0.5, 0.04, 0.0), 3.0), 0.803);
     }
     #[test]
     fn rebalance_test() {

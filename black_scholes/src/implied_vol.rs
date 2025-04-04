@@ -1,4 +1,4 @@
-use crate::black_scholes::{black_scholes, d1};
+use crate::black_scholes::{black_scholes_call, d1};
 use statrs::distribution::{Continuous, Normal};
 
 pub fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) -> f64) -> f64 {
@@ -6,18 +6,18 @@ pub fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) ->
     let mut xold: f64 = x0 - 1.0;
     while (xnew - xold).abs() > tol {
         xold = xnew;
-        xnew = xold + f(xold) / fprime(xold);
+        xnew = xold - f(xold) / fprime(xold);
         println!("{:#.6}", xnew);
     }
     return xnew;
 }
 
-pub fn implied_vol(c: f64, s: f64, k: f64, t: f64, r: f64, x0: f64) -> f64 {
+pub fn implied_vol(c: f64, s: f64, k: f64, t: f64, r: f64, q: f64, x0: f64) -> f64 {
     return newton(
         x0,
         0.000001,
-        |x| -1.0 * black_scholes(s, k, x, t, r) - c,
-        |x| vega(s, k, x, t, r),
+        |x| black_scholes_call(s, k, x, t, r, q) - c,
+        |x| vega(s, k, x, t, r, q),
     );
 }
 
@@ -26,8 +26,8 @@ fn pdf(x: f64) -> f64 {
     return n.pdf(x);
 }
 
-fn vega(s: f64, k: f64, x: f64, t: f64, r: f64) -> f64 {
-    return s * pdf(d1(s, k, x, t, r)) * t.sqrt();
+fn vega(s: f64, k: f64, x: f64, t: f64, r: f64, q: f64) -> f64 {
+    return s * pdf(d1(s, k, x, t, r, q)) * t.sqrt();
 }
 
 #[cfg(test)]
@@ -40,12 +40,12 @@ mod black_scholes_test {
     #[test]
     fn newton_test() {
         assert_eq!(
-            round(implied_vol(7.0, 25.0, 20.0, 1.0, 0.05, 0.25), 6.0),
+            round(implied_vol(7.0, 25.0, 20.0, 1.0, 0.05, 0.0, 0.25), 6.0),
             0.363063
         );
     }
     #[test]
     fn vega_test() {
-        assert_eq!(round(vega(25.0, 20.0, 0.20, 1.0, 0.05), 6.0), 3.406799);
+        assert_eq!(round(vega(25.0, 20.0, 0.20, 1.0, 0.05, 0.0), 6.0), 3.406799);
     }
 }

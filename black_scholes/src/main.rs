@@ -5,7 +5,7 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
-    implied_vol::implied_vol(2.5, 30.0, 30.0, 0.5, 0.03 - 0.01, 0.5);
+    implied_vol::implied_vol(2.5, 30.0, 30.0, 0.5, 0.03, 0.01, 0.5);
 
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
@@ -14,7 +14,7 @@ fn main() {
 fn bs() {
     println!(
         "3. i)\n\tThe delta of the put option position is -1000N(-d1)\n\t(S = 100, K = 100, vol = 30%, T = 0.5, r = 5%):\n\n\t{:#.6}\n",
-        -1000.0 * black_scholes::delta(100.0, 100.0, 0.30, 0.5, 0.05)
+        -1000.0 * black_scholes::delta(100.0, 100.0, 0.30, 0.5, 0.05, 0.0)
     );
 
     let put: f64 = black_scholes::black_scholes(100.0, 100.0, 0.30, 0.5, 0.05);

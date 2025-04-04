@@ -5,6 +5,8 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
+    implied_vol::implied_vol(2.5, 30.0, 30.0, 0.5, 0.03 - 0.01, 0.5);
+
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
 }

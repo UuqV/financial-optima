@@ -16,9 +16,10 @@ pub fn implied_vol(c: f64, s: f64, k: f64, t: f64, r: f64, x0: f64) -> f64 {
     return newton(
         x0,
         0.000001,
-        |x| black_scholes(s, k, x, t, r) - c,
+        |x| -1.0 * black_scholes(s, k, x, t, r) - c,
         |x| vega(s, k, x, t, r),
-    );
+    )
+    .abs();
 }
 
 fn pdf(x: f64) -> f64 {

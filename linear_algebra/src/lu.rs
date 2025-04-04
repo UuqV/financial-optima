@@ -18,12 +18,7 @@ pub fn power_intervals(n: u32) {
     for r in 3..=n {
         let power = 2_u32.pow(r) as usize;
         let h = 1.0 / power as f64;
-        let mut x = 0.0;
-        for i in 1..power {
-            x += h;
-            println!("{} {}", x, 2.0 * E.powf(-x) + x * E.powf(-x));
-        }
-        println!("n = {}, h = {}", power, h);
+        println!("\nn = {}, h = {}\n", power, h);
         let a = build_ode(
             |h: f64| 2.0 - h.powf(2.0),
             |h: f64| -1.0 * (1.0 - h),
@@ -39,7 +34,28 @@ pub fn power_intervals(n: u32) {
             power,
         );
 
-        println!("{}", decompose(a, b));
+        let solution = decompose(a, b);
+
+        println!(
+            "       {:width$} {:width$} {:width$} {:width$}",
+            "xi",
+            "yi",
+            "y(xi)",
+            "|yi - y(xi)|",
+            width = 15
+        );
+        let mut x = 0.0;
+        for i in 1..power {
+            x += h;
+            println!(
+                "{:width$.6} {:width$.6} {:width$.6} {:width$.6}",
+                x,
+                solution[i - 1],
+                2.0 * E.powf(-x) + x * E.powf(-x),
+                solution[i - 1] - (2.0 * E.powf(-x) + x * E.powf(-x)),
+                width = 15
+            );
+        }
     }
 }
 

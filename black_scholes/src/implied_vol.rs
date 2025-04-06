@@ -7,15 +7,15 @@ pub fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) ->
     while (xnew - xold).abs() > tol {
         xold = xnew;
         xnew = xold - f(xold) / fprime(xold);
-        println!("{:#.6}", xnew);
+        println!("{:#.8}", xnew);
     }
     return xnew;
 }
 
-pub fn implied_vol(c: f64, s: f64, k: f64, t: f64, r: f64, q: f64, x0: f64) -> f64 {
+pub fn implied_vol(c: f64, s: f64, k: f64, t: f64, r: f64, q: f64, x0: f64, tol: f64) -> f64 {
     return newton(
         x0,
-        0.000001,
+        tol,
         |x| black_scholes_call(s, k, x, t, r, q) - c,
         |x| vega(s, k, x, t, r, q),
     );

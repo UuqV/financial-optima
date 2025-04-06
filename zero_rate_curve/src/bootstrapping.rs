@@ -10,12 +10,6 @@ pub struct Bond {
     pub price: f64,       // Current market price
 }
 
-pub fn bond_price(bonds: &[Bond], zero_rate: f64) -> f64 {
-    return bonds.into_iter().enumerate().fold(0.0, |b, bond| {
-        return b + bond.coupon_rate * E.powf(-1.0 * bond.maturity * zero_rate);
-    });
-}
-
 pub fn bootstrap_zero_rates(bonds: Vec<Bond>) -> Array1<f64> {
     let mut zero_rates = Vec::with_capacity(bonds.len());
     let mut discount_factors = Vec::new();

@@ -6,6 +6,13 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
+    let elapsed = now.elapsed();
+    println!("\nElapsed: {:.2?}", elapsed);
+}
+
+fn final_questions() {}
+
+fn bootstrap() {
     let bonds: Vec<bootstrapping::Bond> = vec![
         bootstrapping::Bond {
             maturity: 0.5,
@@ -29,9 +36,6 @@ fn main() {
         },
     ];
     println!("{}", bootstrapping::bootstrap_zero_rates(bonds));
-
-    let elapsed = now.elapsed();
-    println!("\nElapsed: {:.2?}", elapsed);
 }
 
 fn hw5_3() {

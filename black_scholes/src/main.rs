@@ -5,12 +5,19 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
-    implied_vol::implied_vol(2.5, 30.0, 30.0, 0.5, 0.03, 0.01, 0.5);
+    final_questions();
 
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
 }
 
+fn final_questions() {
+    implied_vol::implied_vol(8.0, 50.0, 45.0, 0.75, 0.02, 0.01, 0.2, 0.00000001);
+}
+
+fn five_1() {
+    implied_vol::implied_vol(2.5, 30.0, 30.0, 0.5, 0.03, 0.01, 0.5, 0.000001);
+}
 fn bs() {
     println!(
         "3. i)\n\tThe delta of the put option position is -1000N(-d1)\n\t(S = 100, K = 100, vol = 30%, T = 0.5, r = 5%):\n\n\t{:#.6}\n",

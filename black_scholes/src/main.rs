@@ -12,7 +12,8 @@ fn main() {
 }
 
 fn final_questions() {
-    implied_vol::implied_vol(8.0, 50.0, 45.0, 0.75, 0.02, 0.01, 0.2, 0.00000001);
+    //implied_vol::implied_vol(8.0, 50.0, 45.0, 0.75, 0.02, 0.01, 0.2, 0.00000001);
+    implied_vol::find_strike(50.0, 0.25, 0.5, 0.03, 0.01, 50.0, 0.000001);
 }
 
 fn five_1() {

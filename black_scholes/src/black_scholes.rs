@@ -1,4 +1,4 @@
-use statrs::distribution::{ContinuousCDF, Normal};
+use statrs::distribution::{Continuous, ContinuousCDF, Normal};
 use std::f64::consts::E;
 
 pub fn black_scholes_put(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
@@ -23,9 +23,22 @@ fn d2(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
     return d1(s, k, sigma, t, r, q) - (sigma * t.sqrt());
 }
 
-fn cdf(x: f64) -> f64 {
+pub fn cdf(x: f64) -> f64 {
     let n = Normal::new(0.0, 1.0).unwrap();
     return n.cdf(x);
+}
+
+pub fn pdf(x: f64) -> f64 {
+    let n = Normal::new(0.0, 1.0).unwrap();
+    return n.pdf(x);
+}
+
+pub fn bs_deriv_k(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    let d1 = d1(s, k, sigma, t, r, q);
+    let d2 = d2(s, k, sigma, t, r, q);
+
+    return E.powf(-r * t) * cdf(-d2)
+        + 1.0 / (k * sigma * t.sqrt()) * (k * pdf(-d2) - E.powf(-q * t) * pdf(-d1));
 }
 
 pub fn rebalance(

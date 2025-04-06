@@ -1,7 +1,7 @@
 use statrs::distribution::{ContinuousCDF, Normal};
 use std::f64::consts::E;
 
-pub fn black_scholes(s: f64, k: f64, sigma: f64, t: f64, r: f64) -> f64 {
+pub fn black_scholes_put(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
     return k * E.powf(-r * t) * cdf(-d2(s, k, sigma, t, r, 0.0))
         - s * cdf(-d1(s, k, sigma, t, r, 0.0));
 }
@@ -43,7 +43,7 @@ pub fn rebalance(
     let mut options_delta = 0.0;
     let mut week = 0;
     for price in s.iter() {
-        option_price = black_scholes(*price, k, sigma, big_t, r);
+        option_price = black_scholes_put(*price, k, sigma, big_t, r, 0.0);
         println!(
             "Week {:#} - BH {:width$.6} {:width$.6} {:width$.6} {:width$.6}",
             week,
@@ -97,7 +97,7 @@ mod black_scholes_test {
     #[test]
     fn put_test() {
         assert_eq!(
-            round(black_scholes(20.0, 25.0, 0.30, 0.5, 0.04), 6.0),
+            round(black_scholes_put(20.0, 25.0, 0.30, 0.5, 0.04, 0.0), 6.0),
             4.927351
         );
     }

@@ -15,6 +15,10 @@ fn main() {
 }
 
 fn final_questions() {
+    bond_final_q();
+}
+
+fn bond_final_q() {
     static practice_fixture: [bond_price::CFD; 5] = [
         bond_price::CFD {
             t: (4.0 / 12.0),

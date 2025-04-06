@@ -41,7 +41,7 @@ mod black_scholes_test {
     fn newton_test() {
         assert_eq!(
             round(
-                implied_vol(7.0, 25.0, 20.0, 1.0, 0.05, 0.0, 0.25, 0, 0.000001),
+                implied_vol(7.0, 25.0, 20.0, 1.0, 0.05, 0.0, 0.25, 0.000001),
                 6.0
             ),
             0.363063

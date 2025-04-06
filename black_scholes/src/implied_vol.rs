@@ -48,4 +48,11 @@ mod black_scholes_test {
     fn vega_test() {
         assert_eq!(round(vega(25.0, 20.0, 0.20, 1.0, 0.05, 0.0), 6.0), 3.406799);
     }
+    #[test]
+    fn vega_q_test() {
+        assert_eq!(
+            round(vega(25.0, 20.0, 0.20, 1.0, 0.05, 0.01), 6.0),
+            3.661266
+        );
+    }
 }

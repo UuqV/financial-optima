@@ -1,11 +1,34 @@
 mod bond_price;
+mod bootstrapping;
 mod newton;
 
 fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
-    hw5_9();
+    let bonds: Vec<bootstrapping::Bond> = vec![
+        bootstrapping::Bond {
+            maturity: 0.5,
+            coupon_rate: 0.0,
+            price: 99.0,
+        },
+        bootstrapping::Bond {
+            maturity: 1.0,
+            coupon_rate: 4.0,
+            price: 102.0,
+        },
+        bootstrapping::Bond {
+            maturity: 2.0,
+            coupon_rate: 4.0,
+            price: 103.5,
+        },
+        bootstrapping::Bond {
+            maturity: 5.0,
+            coupon_rate: 4.0,
+            price: 109.0,
+        },
+    ];
+    println!("{}", bootstrapping::bootstrap_zero_rates(bonds));
 
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);

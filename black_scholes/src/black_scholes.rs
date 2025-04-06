@@ -16,7 +16,7 @@ pub fn delta(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
 }
 
 pub fn d1(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
-    return ((s / k).ln() + (r - q + (sigma.powf(2.0) / 2.0)) * t) / (sigma * t.sqrt());
+    return ((s / k).ln() + ((r - q) + (sigma.powf(2.0) / 2.0)) * t) / (sigma * t.sqrt());
 }
 
 fn d2(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
@@ -123,6 +123,13 @@ mod black_scholes_test {
                 1.0
             ),
             291.6
+        );
+    }
+    #[test]
+    fn bs_call_test() {
+        assert_eq!(
+            round(black_scholes_call(30.0, 30.0, 0.30, 0.5, 0.03, 0.01), 6.0),
+            2.660205
         );
     }
 }

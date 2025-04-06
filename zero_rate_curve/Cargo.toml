@@ -3,3 +3,7 @@ name = "zero_rate_curve"
 version = "0.1.0"
 description = ""
 edition = "2021"
+
+[dependencies]
+ndarray = "0.16.1"
+rust_decimal = "1.30.0"

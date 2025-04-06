@@ -1,3 +1,5 @@
+use newton::newton_bond_yield;
+
 mod bond_price;
 mod bootstrapping;
 mod newton;
@@ -6,11 +8,66 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
+    final_questions();
+
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);
 }
 
-fn final_questions() {}
+fn final_questions() {
+    static practice_fixture: [bond_price::CFD; 5] = [
+        bond_price::CFD {
+            t: (4.0 / 12.0),
+            cash_flow: 2.0,
+        },
+        bond_price::CFD {
+            t: (10.0 / 12.0),
+            cash_flow: 2.0,
+        },
+        bond_price::CFD {
+            t: (16.0 / 12.0),
+            cash_flow: 2.0,
+        },
+        bond_price::CFD {
+            t: (22.0 / 12.0),
+            cash_flow: 2.0,
+        },
+        bond_price::CFD {
+            t: (28.0 / 12.0),
+            cash_flow: 102.0,
+        },
+    ];
+    let bond_price = bond_price::bond_price_over_time(&practice_fixture, |t| {
+        0.015 + ((1.0 + 2.0 * t.powf(2.0)) / (100.0 + 100.0 * t.powf(2.0)))
+    });
+    println!("Bond price: {:#.6}", bond_price);
+    let y = newton::newton_bond_yield(bond_price, &practice_fixture, 0.1, 0.000001);
+    println!("Bond yield: {:#.6}", y);
+
+    println!(
+        "Modified Duration: {:#.6}",
+        newton::modified_duration(&practice_fixture, bond_price, y)
+    );
+    println!(
+        "Convexity: {:#.6}",
+        newton::convexity(&practice_fixture, bond_price, y)
+    );
+
+    println!(
+        "Dollar Duration: {:#.6}",
+        newton::dollar_duration(&practice_fixture, bond_price, y)
+    );
+
+    println!(
+        "Dollar Convexity: {:#.6}",
+        newton::dollar_duration(&practice_fixture, bond_price, y)
+    );
+
+    println!(
+        "DVO1: {:#.6}",
+        newton::dv01(&practice_fixture, bond_price, y)
+    );
+}
 
 fn bootstrap() {
     let bonds: Vec<bootstrapping::Bond> = vec![
@@ -77,7 +134,10 @@ coupon rate and price 101. What are the modified duration and the convexity of t
 
     println!("\nYield via Newton's method: {:#.6}", n);
 
-    println!("\nDuration: {:#.6}", newton::duration(&q1, 101.0, n));
+    println!(
+        "\nDuration: {:#.6}",
+        newton::modified_duration(&q1, 101.0, n)
+    );
 
     println!("\nConvexity: {:#.6}", newton::convexity(&q1, 101.0, n));
 }
@@ -116,7 +176,7 @@ fn hw5_9() {
 
     let y = 0.09;
     let price = bond_price::bond_price_over_time(&q9, |x: f64| 0.09);
-    let duration = newton::duration(&q9, price, y);
+    let duration = newton::modified_duration(&q9, price, y);
     let convexity = newton::convexity(&q9, price, y);
 
     println!("\nBond price: {:#.6}", price);

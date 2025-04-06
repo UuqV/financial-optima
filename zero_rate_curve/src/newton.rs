@@ -34,28 +34,41 @@ fn lower_sum(cash_flow_dates: &[CFD], xold: f64) -> f64 {
     });
 }
 
-pub fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
-    return (1.0 / b)
-        * cash_flow_dates
-            .into_iter()
-            .enumerate()
-            .fold(0.0, |v, pair| {
-                let (e, c) = pair;
-                let i = (e + 1) as f64;
-                return v + c.cash_flow * (i / 2.0) * E.powf(-y * (i / 2.0));
-            });
+pub fn modified_duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+    return (1.0 / b) * duration(cash_flow_dates, b, y);
 }
 
+pub fn dollar_duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+    return -1.0 * duration(cash_flow_dates, b, y);
+}
+
+fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+    return cash_flow_dates
+        .into_iter()
+        .enumerate()
+        .fold(0.0, |v, pair| {
+            let (e, c) = pair;
+            let i = (e + 1) as f64;
+            return v + c.cash_flow * (i / 2.0) * E.powf(-y * (i / 2.0));
+        });
+}
+
+pub fn dollar_convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+    return cash_flow_dates
+        .into_iter()
+        .enumerate()
+        .fold(0.0, |v, pair| {
+            let (e, c) = pair;
+            let i = (e + 1) as f64;
+            return v + c.cash_flow * (i.powf(2.0) / 4.0) * E.powf(-y * (i / 2.0));
+        });
+}
 pub fn convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
-    return (1.0 / b)
-        * cash_flow_dates
-            .into_iter()
-            .enumerate()
-            .fold(0.0, |v, pair| {
-                let (e, c) = pair;
-                let i = (e + 1) as f64;
-                return v + c.cash_flow * (i.powf(2.0) / 4.0) * E.powf(-y * (i / 2.0));
-            });
+    return (1.0 / b) * dollar_convexity(cash_flow_dates, b, y);
+}
+
+pub fn dv01(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
+    return dollar_duration(cash_flow_dates, b, y) / 10000.0;
 }
 
 pub fn taylor_duration_price(price: f64, duration: f64, delta: f64) -> f64 {
@@ -195,7 +208,7 @@ mod newton_bond_tests {
     fn duration_test() {
         assert_eq!(
             round(
-                duration(
+                modified_duration(
                     &book_q1_fixture,
                     100.0 + (1.0 / 32.0),
                     newton_bond_yield(100.0 + (1.0 / 32.0), &book_q1_fixture, 0.1, 0.000001)

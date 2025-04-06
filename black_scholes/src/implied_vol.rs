@@ -1,4 +1,4 @@
-use crate::black_scholes::{black_scholes_call, d1};
+use crate::black_scholes::{black_scholes_call, black_scholes_put, d1};
 use statrs::distribution::{Continuous, Normal};
 
 pub fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) -> f64) -> f64 {
@@ -26,8 +26,17 @@ fn pdf(x: f64) -> f64 {
     return n.pdf(x);
 }
 
-fn vega(s: f64, k: f64, x: f64, t: f64, r: f64, q: f64) -> f64 {
-    return s * pdf(d1(s, k, x, t, r, q)) * t.sqrt();
+fn vega(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    return s * pdf(d1(s, k, sigma, t, r, q)) * t.sqrt();
+}
+
+pub fn find_strike(c: f64, s: f64, sigma: f64, t: f64, r: f64, q: f64, x0: f64, tol: f64) -> f64 {
+    return newton(
+        x0,
+        tol,
+        |k| black_scholes_put(s, k, sigma, t, r, q) - c,
+        |k| vega(s, k, sigma, t, r, q),
+    );
 }
 
 #[cfg(test)]

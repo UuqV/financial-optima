@@ -64,7 +64,7 @@ fn final_questions() {
     );
 
     println!(
-        "DVO1: {:#.6}",
+        "DV01: {:#.6}",
         newton::dv01(&practice_fixture, bond_price, y)
     );
 }

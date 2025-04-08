@@ -10,38 +10,36 @@ pub struct Bond {
     pub price: f64,       // Current market price
 }
 
-fn pricing(bonds: Vec<Bond>, zero_rates: &Vec<f64>, discount_factors: &Vec<f64>) -> f64 {
+fn pricing(sum: f64, bond: &Bond) -> f64 {
     return newton(
-        x0,
-        tol,
+        0.05,
+        0.000001,
         |x| {
-            return discount_factors.iter().enumerate().fold(0.0, |i, df| {
-                let coupon_payment = if j < i {
-                    bonds[j].coupon_rate * bonds[j].price
-                } else {
-                    0.0
-                };
-                return coupon_payment * df;
-            });
+            return sum + 100.0 * single_price(&bond, x) - bond.price;
         },
-        |x| {},
+        |x| {
+            return -100.0 * bond.maturity * single_price(&bond, x);
+        },
     );
+}
+
+fn single_price(bond: &Bond, rate: f64) -> f64 {
+    return (bond.coupon_rate / 2.0) * E.powf(-rate * bond.maturity);
 }
 
 pub fn bootstrap_zero_rates(bonds: Vec<Bond>) -> Array1<f64> {
     let mut zero_rates = Vec::with_capacity(bonds.len());
-    let mut discount_factors = Vec::new();
+    let mut sum: f64 = 0.0;
 
     for (i, bond) in bonds.iter().enumerate() {
         if i == 0 {
-            // For the first bond (short-term), the zero rate is straightforward
             let zero_rate = (bond.price / 100.0).ln() / -bond.maturity;
             zero_rates.push(zero_rate);
-            discount_factors.push(1.0 / (1.0 + zero_rate));
+            sum += single_price(bond, zero_rate);
         } else {
-            let zero_rate = pricing(bonds, &zero_rates, &discount_factors);
+            let zero_rate = pricing(sum, &bond);
             zero_rates.push(zero_rate);
-            discount_factors.push(1.0 / (1.0 + zero_rate));
+            sum += single_price(bond, zero_rate)
         }
     }
 

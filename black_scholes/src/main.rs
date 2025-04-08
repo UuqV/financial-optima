@@ -20,7 +20,7 @@ fn final_questions() {
 }
 
 fn practice_strike() -> f64 {
-    return implied_vol::find_strike(50.0, 0.25, 0.5, 0.03, 0.01, 50.0, 0.000001);
+    return implied_vol::find_strike(50.0, 0.25, 0.5, 0.03, 0.01, 50.0, 0.000001, true);
 }
 
 fn five_1() {

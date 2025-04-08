@@ -1,4 +1,4 @@
-use crate::black_scholes::{black_scholes_call, black_scholes_put, bs_deriv_k_put, d1, pdf};
+use crate::black_scholes::{black_scholes, black_scholes_call, bs_deriv_k, d1, pdf};
 
 pub fn newton(x0: f64, tol: f64, f: impl Fn(f64) -> f64, fprime: impl Fn(f64) -> f64) -> f64 {
     let mut xnew: f64 = x0;
@@ -24,12 +24,21 @@ fn vega(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
     return s * pdf(d1(s, k, sigma, t, r, q)) * t.sqrt();
 }
 
-pub fn find_strike(s: f64, sigma: f64, t: f64, r: f64, q: f64, x0: f64, tol: f64) -> f64 {
+pub fn find_strike(
+    s: f64,
+    sigma: f64,
+    t: f64,
+    r: f64,
+    q: f64,
+    x0: f64,
+    tol: f64,
+    put: bool,
+) -> f64 {
     return newton(
         x0,
         tol,
-        |k| black_scholes_put(s, k, sigma, t, r, q) - k + s,
-        |k| bs_deriv_k_put(s, k, sigma, t, r, q) - 1.0,
+        |k| black_scholes(s, k, sigma, t, r, q, put) - k + s,
+        |k| bs_deriv_k(s, k, sigma, t, r, q, put) - 1.0,
     );
 }
 

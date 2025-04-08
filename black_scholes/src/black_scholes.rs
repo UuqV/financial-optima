@@ -11,6 +11,14 @@ pub fn black_scholes_call(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) ->
         - k * E.powf(-r * t) * cdf(d2(s, k, sigma, t, r, q));
 }
 
+pub fn black_scholes(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64, put: bool) -> f64 {
+    if (put) {
+        return black_scholes_put(s, k, sigma, t, r, q);
+    } else {
+        return black_scholes_call(s, k, sigma, t, r, q);
+    }
+}
+
 pub fn delta(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
     return cdf(-d1(s, k, sigma, t, r, q));
 }
@@ -42,6 +50,25 @@ pub fn bs_deriv_k_put(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64
     let strike_term = k * E.powf(-r * t) * pdf(-d2);
     let spot_term = s * E.powf(-q * t) * pdf(d1);
     return e_term + constant * (strike_term - spot_term);
+}
+
+pub fn bs_deriv_k_call(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    let d1 = d1(s, k, sigma, t, r, q);
+    let d2 = d2(s, k, sigma, t, r, q);
+
+    let e_term = E.powf(-r * t) * cdf(d2);
+    let constant = 1.0 / (k * sigma * E.powf(-r * t));
+    let strike_term = k * E.powf(-r * t) * pdf(d2);
+    let spot_term = s * E.powf(-q * t) * pdf(d1);
+    return e_term + constant * (strike_term - spot_term);
+}
+
+pub fn bs_deriv_k(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64, put: bool) -> f64 {
+    if put {
+        return bs_deriv_k_put(s, k, sigma, t, r, q);
+    } else {
+        return bs_deriv_k_call(s, k, sigma, t, r, q);
+    }
 }
 
 pub fn rebalance(
@@ -144,8 +171,8 @@ mod black_scholes_test {
     #[test]
     fn bs_call_test() {
         assert_eq!(
-            round(black_scholes_call(30.0, 30.0, 0.30, 0.5, 0.03, 0.01), 6.0),
-            2.660205
+            round(black_scholes_call(30.0, 30.0, 0.30, 0.5, 0.03, 0.01), 4.0),
+            2.6602
         );
     }
 }

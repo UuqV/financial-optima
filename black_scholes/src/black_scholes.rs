@@ -33,11 +33,15 @@ pub fn pdf(x: f64) -> f64 {
     return n.pdf(x);
 }
 
-pub fn bs_deriv_k(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+pub fn bs_deriv_k_put(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f64 {
+    let d1 = d1(s, k, sigma, t, r, q);
     let d2 = d2(s, k, sigma, t, r, q);
 
-    return E.powf(-r * t) * cdf(-d2)
-        - k * E.powf(-r * t) * pdf(-d2) * ((1.0 / k) - (d2 / (sigma * t.sqrt())));
+    let e_term = E.powf(-r * t) * cdf(-d2);
+    let constant = 1.0 / (k * sigma * E.powf(-r * t));
+    let strike_term = k * E.powf(-r * t) * pdf(-d2);
+    let spot_term = s * E.powf(-q * t) * pdf(d1);
+    return e_term + constant * (strike_term - spot_term);
 }
 
 pub fn rebalance(

@@ -8,8 +8,7 @@ fn main() {
     use std::time::Instant;
     let now = Instant::now();
 
-    //final_questions();
-    bootstrap();
+    final_questions();
 
     let elapsed = now.elapsed();
     println!("\nElapsed: {:.2?}", elapsed);

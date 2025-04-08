@@ -7,14 +7,17 @@ pub struct CFD {
     pub cash_flow: f64,
 }
 
-fn disc(t: f64, zero_rate: impl Fn(f64) -> f64) -> f64 {
+fn discount(t: f64, zero_rate: impl Fn(f64) -> f64) -> f64 {
     return E.powf(-1.0 * t * zero_rate(t));
 }
 
 // dtcfs: Dates to cash flows
 pub fn bond_price_over_time(dtcfs: &[CFD], zero_rate: impl Fn(f64) -> f64) -> f64 {
+    println!("Discount factors:");
     return dtcfs.into_iter().fold(0.0, |b, dtcf| {
-        return b + dtcf.cash_flow * disc(dtcf.t, &zero_rate);
+        let discount = discount(dtcf.t, &zero_rate);
+        println!("{:.6}", discount);
+        return b + dtcf.cash_flow * discount;
     });
 }
 
@@ -82,7 +85,7 @@ mod bond_price_tests {
     #[test]
     fn disc_test() {
         assert_eq!(
-            round(disc(0.5, |x: f64| 0.05 + 0.005 * (1.0 + x).sqrt()), 6.0),
+            round(discount(0.5, |x: f64| 0.05 + 0.005 * (1.0 + x).sqrt()), 6.0),
             0.972328
         );
     }

@@ -35,36 +35,26 @@ fn lower_sum(cash_flow_dates: &[CFD], xold: f64) -> f64 {
 }
 
 pub fn modified_duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
-    return (1.0 / b) * duration(cash_flow_dates, b, y);
+    return (1.0 / b) * duration(cash_flow_dates, y);
 }
 
 pub fn dollar_duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
-    return -1.0 * duration(cash_flow_dates, b, y);
+    return -1.0 * duration(cash_flow_dates, y);
 }
 
-fn duration(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
-    return cash_flow_dates
-        .into_iter()
-        .enumerate()
-        .fold(0.0, |v, pair| {
-            let (e, c) = pair;
-            let i = (e + 1) as f64;
-            return v + c.cash_flow * (i / 2.0) * E.powf(-y * (i / 2.0));
-        });
+fn duration(cash_flow_dates: &[CFD], y: f64) -> f64 {
+    return cash_flow_dates.into_iter().fold(0.0, |v, c| {
+        return v + c.cash_flow * c.t * E.powf(-y * c.t);
+    });
 }
 
-pub fn dollar_convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
-    return cash_flow_dates
-        .into_iter()
-        .enumerate()
-        .fold(0.0, |v, pair| {
-            let (e, c) = pair;
-            let i = (e + 1) as f64;
-            return v + c.cash_flow * (i.powf(2.0) / 4.0) * E.powf(-y * (i / 2.0));
-        });
+pub fn dollar_convexity(cash_flow_dates: &[CFD], y: f64) -> f64 {
+    return cash_flow_dates.into_iter().fold(0.0, |v, c| {
+        return v + c.cash_flow * c.t.powf(2.0) * E.powf(-y * c.t);
+    });
 }
 pub fn convexity(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {
-    return (1.0 / b) * dollar_convexity(cash_flow_dates, b, y);
+    return (1.0 / b) * dollar_convexity(cash_flow_dates, y);
 }
 
 pub fn dv01(cash_flow_dates: &[CFD], b: f64, y: f64) -> f64 {

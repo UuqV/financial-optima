@@ -64,7 +64,7 @@ fn bond_final_q() {
 
     println!(
         "Dollar Convexity: {:#.6}",
-        newton::dollar_convexity(&practice_fixture, bond_price, y)
+        newton::dollar_convexity(&practice_fixture, y)
     );
 
     println!(

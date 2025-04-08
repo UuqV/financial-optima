@@ -12,7 +12,7 @@ pub fn black_scholes_call(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) ->
 }
 
 pub fn black_scholes(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64, put: bool) -> f64 {
-    if (put) {
+    if put {
         return black_scholes_put(s, k, sigma, t, r, q);
     } else {
         return black_scholes_call(s, k, sigma, t, r, q);
@@ -56,8 +56,8 @@ pub fn bs_deriv_k_call(s: f64, k: f64, sigma: f64, t: f64, r: f64, q: f64) -> f6
     let d1 = d1(s, k, sigma, t, r, q);
     let d2 = d2(s, k, sigma, t, r, q);
 
-    let e_term = E.powf(-r * t) * cdf(d2);
-    let constant = 1.0 / (k * sigma * E.powf(-r * t));
+    let e_term = -E.powf(-r * t) * cdf(d2);
+    let constant = 1.0 / (k * sigma * t.sqrt());
     let strike_term = k * E.powf(-r * t) * pdf(d2);
     let spot_term = s * E.powf(-q * t) * pdf(d1);
     return e_term + constant * (strike_term - spot_term);

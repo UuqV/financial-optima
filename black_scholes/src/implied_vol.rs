@@ -70,4 +70,14 @@ mod black_scholes_test {
             3.661266
         );
     }
+    #[test]
+    fn find_strike_call() {
+        assert_eq!(
+            round(
+                find_strike(50.0, 0.25, 0.5, 0.03, 0.01, 50.0, 0.000001, false),
+                6.0
+            ),
+            52.627583
+        );
+    }
 }

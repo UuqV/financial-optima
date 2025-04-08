@@ -1,13 +1,13 @@
 import math
 import scipy
 
-vol = .25
-spot = 30
-strike = 30
-time = 6/12
-interest = .03
+vol = .2
+spot = 50
+strike = 45
+time = 9/12
+interest = .02
 divs = .01
-bs_price = 2.5
+bs_price = 8
 tol_approx = 1e-6
 
 
@@ -17,7 +17,7 @@ def print_ascii_table(float_tuple_list):
 
     # Print each index and corresponding rounded float values from the tuple
     for i, (num1, num2) in enumerate(float_tuple_list, start=1):
-        print(f"{i:<8}{num1:.7f}    {num2:.7f}")
+        print(f"{i:<8}{num1:.8f}    {num2:.8f}")
 
 
 def d1(spot, strike, interest, vol, time, divs):
@@ -136,8 +136,8 @@ def wrt_K_put(spot, strike, interest, vol, time, divs):
 
     e_term = math.exp(-interest * time) * scipy.stats.norm.cdf(-d_2)
     constant = 1/(strike * vol * math.sqrt(time))
-    strike_term  = strike * scipy.stats.norm.pdf(-d_2)
-    spot_term = spot * math.exp(-divs * time) * scipy.stats.norm.pdf(-d_1)
+    strike_term  = strike * math.exp(-interest * time) * scipy.stats.norm.pdf(-d_2)
+    spot_term = spot * math.exp(-divs * time) * scipy.stats.norm.pdf(d_1)
     return e_term + constant * (strike_term - spot_term)
 
 
@@ -165,15 +165,15 @@ def question_1(vol, spot, strike, time, interest, divs, bs_price, tol_approx, fu
 def question_4(vol, spot, strike, time, interest, divs, tol_approx):
     prev = -1000 
     curr = strike
-    strike_record = [(curr, call(vol, spot, curr, time, interest, divs))]
+    strike_record = [(curr, put(vol, spot, curr, time, interest, divs))]
     while abs(curr - prev) > tol_approx:
         prev = curr 
 
-        num = call(vol, spot, curr, time, interest, divs) - curr + spot
-        denom = wrt_K_call(spot, curr, interest, vol, time, divs) - 1
+        num = put(vol, spot, curr, time, interest, divs) - curr + spot
+        denom = wrt_K_put(spot, curr, interest, vol, time, divs) - 1
 
         curr = curr - (num/denom)
-        strike_record.append((curr, call(vol, spot, curr, time, interest, divs)))
+        strike_record.append((curr, put(vol, spot, curr, time, interest, divs)))
     print_ascii_table(strike_record)
 
         

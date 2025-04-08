@@ -99,9 +99,8 @@ if __name__ == "__main__":
     cpn_freq = 6 / 12
     cpn_rate = .04
     maturity = 28 / 12
-    calc_time = maturity
     cpn_payment = cpn_rate * face * cpn_freq
-    cash_flows = calculate_cash_flows(calc_time, cpn_payment)
+    cash_flows = calculate_cash_flows(maturity, cpn_payment)
     initial_r = .1
 
     price = sum(cash_flow[3] for cash_flow in cash_flows)

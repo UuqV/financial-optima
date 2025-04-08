@@ -52,14 +52,6 @@ def bond_yield_calculation(initial_r, price, cash_flows, tol):
 
 # bootstrap_zerorate(initial_r, face, cpn_freq, result, bonds, OFFSET, newton_output)
 # print(f"Now result is {result}")
-
-def bond_first_deriv(cash_flows, calc_yield):
-    # tici e ^ (-yti)
-    pv_sum = 0
-    for time, cash_flow, _, _ in cash_flows:
-        pv_sum += time * cash_flow * math.exp(-calc_yield * time)
-    return pv_sum
-
 def bond_second_deriv(cash_flows, calc_yield):
     pv_sum = 0
     for time, cash_flow, _, _ in cash_flows:
@@ -107,9 +99,8 @@ if __name__ == "__main__":
     cpn_freq = 6 / 12
     cpn_rate = .04
     maturity = 28 / 12
-    calc_time = maturity
     cpn_payment = cpn_rate * face * cpn_freq
-    cash_flows = calculate_cash_flows(calc_time, cpn_payment)
+    cash_flows = calculate_cash_flows(maturity, cpn_payment)
     initial_r = .1
 
     price = sum(cash_flow[3] for cash_flow in cash_flows)

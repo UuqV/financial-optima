@@ -11,20 +11,25 @@ pub struct Bond {
 }
 
 fn pricing(sum: f64, bond: &Bond) -> f64 {
+    println!("{}", sum);
     return newton(
         0.05,
         0.000001,
         |x| {
-            return sum + 100.0 * single_price(&bond, x) - bond.price;
+            return sum + 100.0 + single_price(&bond, x) - bond.price;
         },
         |x| {
-            return -100.0 * bond.maturity * single_price(&bond, x);
+            return -bond.maturity * single_price(&bond, x);
         },
     );
 }
 
 fn single_price(bond: &Bond, rate: f64) -> f64 {
-    return (bond.coupon_rate / 2.0) * E.powf(-rate * bond.maturity);
+    println!(
+        " bond {}",
+        (bond.coupon_rate / 2.0) * E.powf(-rate * bond.maturity)
+    );
+    return 100.0 * (bond.coupon_rate / 2.0) * E.powf(-rate * bond.maturity);
 }
 
 pub fn bootstrap_zero_rates(bonds: Vec<Bond>) -> Array1<f64> {
@@ -35,8 +40,9 @@ pub fn bootstrap_zero_rates(bonds: Vec<Bond>) -> Array1<f64> {
         if i == 0 {
             let zero_rate = (bond.price / 100.0).ln() / -bond.maturity;
             zero_rates.push(zero_rate);
-            sum += single_price(bond, zero_rate);
+            sum += bond.price;
         } else {
+            println!("sum: {}", sum);
             let zero_rate = pricing(sum, &bond);
             zero_rates.push(zero_rate);
             sum += single_price(bond, zero_rate)
